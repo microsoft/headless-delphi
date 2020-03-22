@@ -2,13 +2,13 @@
 // FIXME: admin console with authentication?
 // FIXME: how to allow starting a new discussion easily?
 // FIXME: keep a DB of allowed discussionIds?
-// FIXME: what should we do with databases on deploy?
 // FIXME: do we need to be able to send notifications to clients?
 
 // FIXME: check that we catch appropriate errors
 // FIXME: shuffle items
 // FIXME: load a real item on GET ITEM
 
+// FIXME: figure out how to exclude .npmignore files on deploy
 // FIXME: restart server on errors
 // FIXME: make sure to close db on exit
 // FIXME: allow unliking (canceling a like)

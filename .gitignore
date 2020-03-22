@@ -1,2 +1,4 @@
 bundle.js
 data/*
+.DS_STORE
+node_modules
