@@ -49,12 +49,7 @@ function getDb(discId) {
 
 // callback after DB load: ensure the required entities are present
 function dbInit(db) {
-  var posts = db.getCollection("posts");
-  if (!posts) {
-    posts = db.addCollection("posts");
-    var lorempost = { text: "#### Lorem ipsum\n\nDolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim $\\int e^xdx$ ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", handle: "Cicero", discussion: "5X324", md: true, instance: "000000000000000" };
-    posts.insert(lorempost);
-  }
+  getPosts(db);  // called for its side effects: constructs the posts collection
 }
 
 // get the posts collection from the given DB; create it if necessary
@@ -62,7 +57,7 @@ function getPosts(db) {
   var posts = db.getCollection("posts");
   if (!posts) {
     posts = db.addCollection("posts");
-    var lorempost = { text: "#### Lorem ipsum\n\nDolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim $\\int e^xdx$ ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", handle: "Cicero", discussion: "5X324", md: true, instance: "000000000000000" };
+    var lorempost = { text: "#### Lorem ipsum\n\nDolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim $\\int e^xdx$ ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", special: "tag", handle: "Cicero", discussion: "5X324", md: true, instance: "000000000000000" };
     posts.insert(lorempost);
   }
   return posts;
@@ -74,7 +69,7 @@ function getPosts(db) {
 //    id == "out": internal ID is moved to external ID field, if present
 //    anything else: both ID fields are stripped
 function checkAllowedFields(post, id) {
-  const postFields = { text: 1, handle: 1, discussion: 1, instance: 1, md: 1, created: 1 };
+  const postFields = { text: 1, handle: 1, discussion: 1, instance: 1, md: 1, created: 1, special: 1 };
   var res = {};
   for (field in postFields) {
     if (field in post) {
@@ -216,7 +211,7 @@ function httpHandler(request, response) {
   // handle POST requests -- these pay attention to the body of the request
   } else if (method == 'POST') {
     console.log('post: ' + JSON.stringify(reqpath));
-    var onerr = (err) => {
+    let onerr = (err) => {
       response.statusCode = 500;
       response.end();
     };
@@ -226,11 +221,27 @@ function httpHandler(request, response) {
           body.created = Date.now();
           body = checkAllowedFields(body, false);
           let posts = getPosts(getDb(discussion));
-        posts.insert(body);
+          posts.insert(body);
           console.log(JSON.stringify(body));
           response.end(JSON.stringify({ status: 'success', id: body.$loki }))
         } else {
           console.log("empty or malformed post, ignored")
+          response.statusCode = 400;
+          response.end();
+        }
+      }, onerr);
+    } else if (reqpath.dir == '/tag') {                           // POST NEW TAG
+      bodyOf(request, (body) => {
+        if (body && "text" in body) {
+          body.created = Date.now();
+          body.special = 'tag';
+          body = checkAllowedFields(body, false);
+          let posts = getPosts(getDb(discussion));
+          posts.insert(body);
+          console.log(JSON.stringify(body));
+          response.end(JSON.stringify({ status: 'success', id: body.$loki }))
+        } else {
+          console.log("empty or malformed tag post, ignored");
           response.statusCode = 400;
           response.end();
         }

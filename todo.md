@@ -1,7 +1,6 @@
 - Server
 
     - In progress
-        - check that we catch appropriate errors
         - shuffle items
         - load a real item on GET ITEM
 
@@ -12,6 +11,7 @@
         - do we need to be able to send notifications to clients?
 
     - Not yet
+        - make a pass of checking that we catch appropriate errors
         - figure out how to exclude .npmignore files on deploy
         - restart server on errors
         - make sure to close db on exit
@@ -26,11 +26,11 @@
 
 - Client
     - In progress
-        - better reactive design
     - Not yet
         - add recaptcha?
         - don't insert <CR> when we press ctrl-<CR> in the post box
         - change button appearance while waiting for response; prevent repeated clicks when appropriate
     - Done
+        - slightly better reactive design
 
 
