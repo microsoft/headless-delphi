@@ -1,0 +1,101 @@
+body {
+  font-family: arial, sans-serif;
+}
+.main {
+  margin-top: 3em;
+  margin-left: 7ex;
+  margin-right: 7ex;
+  margin-bottom: 25em;
+}
+.round {
+  margin-top: 1em;
+  display: none;
+}
+.but {
+  background-color: #EEEEEE;
+  padding: 3px;
+  border: 1px solid black;
+  border-radius: 3px;
+  font-size: small;
+}
+.but:active {
+  background-color: white;
+}
+.responses {
+  margin-top: 2ex;
+}
+.responselist {
+  margin-top: 2ex;
+  display: flex;
+}
+.response {
+  padding: 2ex 3ex;
+  border: 1px solid black;
+  border-radius: 2px;
+  background-color: #ffffdd;
+  margin-right: 2ex;
+}
+.mypost {
+  border: 1px solid black;
+  border-radius: 2px;
+  background-color: #ddddff;
+  margin-top: 2ex;
+  padding: 1ex 3ex;
+  margin-right: 2ex;
+}
+.like {
+  float: right;
+}
+.messages {
+  position: fixed;
+  top: 2ex;
+  left: 20%;
+  right: 20%;
+  background-color: white;
+  border-radius: 5px;
+}
+.message {
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: #ffbbbb;
+  margin: 3ex 1ex;
+  padding: 1ex 3ex;
+  animation: fadein;
+  animation-duration: 0.75s;
+}
+.message.leaving {
+  animation: fadeout;
+  animation-duration: 0.75s;
+  animation-fill-mode: forwards;
+}
+#title {
+  color: grey;
+}
+#instructions {
+  margin-top: 2ex;
+}
+#postButton {
+  display: none;
+}
+#loadButton {
+  display: none;
+}
+#startDiscussion {
+  display: none;
+}
+.fineprint {
+  margin-top: 3ex;
+  font-size: x-small;
+  color: gray;
+}
+@keyframes fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fadeout {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-5em); }
+}
+label {
+  font-size: small;
+}
