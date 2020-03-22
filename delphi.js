@@ -1,11 +1,3 @@
-
-
-// FIXME: better reactive design
-// FIXME: add recaptcha?
-// FIXME: don't insert <CR> when we press ctrl-<CR> in the post box
-// FIXME: change button appearance while waiting for response; prevent repeated clicks when appropriate
-
-
 var md = require('markdown-it')(),
     mk = require('markdown-it-katex');
 md.use(mk);

@@ -1,22 +1,3 @@
-
-// FIXME: admin console with authentication?
-// FIXME: how to allow starting a new discussion easily?
-// FIXME: keep a DB of allowed discussionIds?
-// FIXME: do we need to be able to send notifications to clients?
-
-// FIXME: check that we catch appropriate errors
-// FIXME: shuffle items
-// FIXME: load a real item on GET ITEM
-
-// FIXME: figure out how to exclude .npmignore files on deploy
-// FIXME: restart server on errors
-// FIXME: make sure to close db on exit
-// FIXME: allow unliking (canceling a like)
-// FIXME: show how many likes each post has?
-// FIXME: show posters when their posts are liked?
-// FIXME: log IP or other identifying info for posters?
-// FIXME: provide a robots.txt?
-
 const http = require('http');
 const path = require('path');
 const fs = require('fs');
