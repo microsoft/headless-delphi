@@ -45,6 +45,7 @@ body {
 }
 .like {
   float: right;
+  margin-left: 1em;
 }
 .messages {
   position: fixed;

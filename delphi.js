@@ -139,13 +139,17 @@ function sendPost(text, useMark) {
   return fetch("item/post?d=" + discussion, fetchData);
 }
 
-function responseBox(res) {
+function responseBox(res, likebut) {
   var id = Number(res.id);
   var likestr = '';
   if (likebut) {
-    likestr = ' <span class="but like" id=' + id + '>&#x1F44D;</span>';
+    likestr = ' \n<span class="but like" id=' + id + '>&#x1F44D;</span>';
   }
-  return "<div class='response'>" + safeRender(res.text, res.md) + likestr + '</div>';
+  if (res.md) {
+    return "<div class='response'>" + safeRender(res.text, true) + likestr + '</div>';
+  } else {
+    return "<div class='response'>" + safeRender(res.text + likestr, false) + '</div>';
+  }
 }
 
 function shuffle() {
