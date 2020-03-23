@@ -1,3 +1,4 @@
+"use strict";
 var md = require('markdown-it')(),
     mk = require('markdown-it-katex');
 md.use(mk);
@@ -42,7 +43,6 @@ function init () {
     }
   })
   .then((res) => {
-    // console.log("res.json received: " + JSON.stringify(res));
     document.getElementById("title").textContent = res.title;
   })
   .catch((err) => {
@@ -163,10 +163,6 @@ function shuffle() {
 function responses() {
   const emptypost = { id: 0, text: '**_&mdash;[No posts available]&mdash;_**', md: true };
   return shuffle()
-  .then((x) => { 
-    console.log('res: ' + JSON.stringify(x));
-    return x;
-  })
   .then((res) => {
     if (res.length > 0) {
       return res.map((x) => responseBox(x, true));
@@ -258,8 +254,8 @@ function nextRound() {
       }
     })
     .catch((error) => {
-      console.error("Error: " + JSON.stringify(error));
       message('Error saving the post; please try again');
+      console.error("Error: " + JSON.stringify(error));
     });
   } else {
     successfulPost("");

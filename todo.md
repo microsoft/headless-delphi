@@ -19,7 +19,7 @@
 
     - Not yet
         - make a pass of checking that we catch appropriate errors
-        - figure out how to exclude .npmignore files on deploy
+        - figure out how to exclude .npmignore'd files on deploy
         - restart server on errors
         - make sure to close db on exit
         - allow unliking (canceling a like)

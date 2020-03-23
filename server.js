@@ -7,9 +7,9 @@ const loki = require('lokijs');
 const discussionIds = { '5X324': 'Test discussion' };
 
 var server;       // the main HTTP server
-var dbs = {};     // maps discussion IDs to DBs
-var posts = {};   // maps discussion IDs to posts collections
-var tags = {};    // maps discussion IDs to latest tags
+var dbs = {};     // cache: maps discussion IDs to DBs
+var posts = {};   // cache: maps discussion IDs to posts collections
+var tags = {};    // cache: maps discussion IDs to latest tags
 
 // construct or reconstruct the server from scratch
 function init() {
@@ -193,7 +193,7 @@ function pickPosts(nPosts, recency, handle, instance, discId) {
 
 // main handler for HTTP requests
 function httpHandler(request, response) {
-  var requrl = new URL(request.url, 'http://example.com/'); // FIXME: is this default what we want?
+  var requrl = new URL(request.url, 'http://example.com/'); // default is required here, but we don't use its value below
   var reqpath = path.parse(path.normalize(requrl.pathname));
   var query = new URLSearchParams(requrl.search);
   var method = request.method;
@@ -211,9 +211,7 @@ function httpHandler(request, response) {
       }
       return;
     } else if (reqpath.dir == '/js') {                               // GET JS
-      if (reqpath.base == 'delphi.js') {
-        fs.createReadStream('delphi.js').pipe(response);
-      } else if (reqpath.base == 'bundle.js') {
+      if (reqpath.base == 'bundle.js') {
         fs.createReadStream('bundle.js').pipe(response);
       } else {
         response.statusCode = 404;
