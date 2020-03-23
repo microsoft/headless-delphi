@@ -139,7 +139,7 @@ function sendPost(text, useMark) {
   return fetch("item/post?d=" + discussion, fetchData);
 }
 
-function responseBox(res, likebut) {
+function responseBox(res) {
   var id = Number(res.id);
   var likestr = '';
   if (likebut) {

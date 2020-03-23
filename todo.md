@@ -34,8 +34,8 @@
 
 - Client
     - In progress
-        - better CSS for markdown-enabled posts
-        - add "use strict"
+        - move like button inside of markdown-enabled posts
+        - better spacing of like button for non-markdown posts
 
     - Not yet
         - add recaptcha?
@@ -43,5 +43,5 @@
         - change button appearance while waiting for response; prevent repeated clicks when appropriate
 
     - Done
-
-
+        - add "use strict"
+        - better CSS for markdown-enabled posts

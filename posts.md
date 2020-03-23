@@ -17,11 +17,17 @@ Humpty Dumpty said, in rather a scornful tone,
     
 ___
 
-#### Lorem ipsum
+# Lorem ipsum
 
 Dolor sit amet, consectetur adipiscing elit, sed 
 do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-Ut enim $$\int e^xdx$$ ad minim veniam, quis nostrud exercitation 
+
+***
+
+## Ut enim 
+
+ad minim veniam, quis nostrud exercitation 
+$$\int e^xdx$$ 
 ullamco laboris nisi ut aliquip ex ea commodo consequat. 
 Duis aute irure dolor in reprehenderit in voluptate velit 
 esse cillum dolore eu fugiat nulla pariatur. Excepteur sint 
@@ -34,6 +40,21 @@ Edward sailed from the River Orwell on 22 June and encountered the French blocki
 
 The English were able to manoeuvre against the French and defeat them in detail, capturing most of their ships. The French lost 16,000&ndash;20,000 men killed, against 400&ndash;600 for the English. The battle gave the English fleet naval supremacy in the English Channel. 
 
-![Battle of Sluys][battle]
+![Galena][galena]
 
-[battle]: https://en.wikipedia.org/wiki/Battle_of_Sluys#/media/File:BattleofSluys.jpeg
+[galena]: https://upload.wikimedia.org/wikipedia/commons/9/92/Calcite-Galena-elm56c.jpg
+
+___
+
+# H1
+content
+## H2
+content
+### H3
+content
+#### H4
+content
+##### H5
+content
+###### H6
+content

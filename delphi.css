@@ -99,3 +99,49 @@ body {
 label {
   font-size: small;
 }
+.response img {
+  max-width: 100%;
+}
+.response h1, .mypost h1 {
+  font-size: 1.25em;
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  font-weight: bold;
+}
+.response h2, .mypost h2 {
+  font-size: 1.1em;
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  font-weight: bold;
+}
+.response h3, .mypost h3 {
+  font-size: 1.0em;
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  font-weight: bold;
+}
+.response h4, .mypost h4 {
+  font-size: 1.0em;
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  font-weight: bold;
+  font-style: italic;
+}
+.response h5, .mypost h5 {
+  font-size: 1.0em;
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  font-weight: normal;
+  font-style: italic;
+}
+.response h6, .mypost h6 {
+  font-size: 0.75em;
+  margin-top: 0.25em;
+  margin-bottom: 0em;
+  font-weight: bold;
+}
+.response p, .mypost p {
+  margin-top: 0.5em;
+  margin-bottom: 0.75em;
+}
+
