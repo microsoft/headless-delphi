@@ -29,14 +29,12 @@
         - provide a robots.txt?
 
     - Done
-        - change database ops that could be async to use promises
-        - use a promise to return the body of a request
-        - better understanding of node.js query semantics
-        - add "use strict"
+        - better handling of likes: saves handle@instance and timestamp
 
 - Client
     - In progress
         - better CSS for markdown-enabled posts
+        - add "use strict"
 
     - Not yet
         - add recaptcha?

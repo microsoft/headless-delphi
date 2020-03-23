@@ -316,7 +316,7 @@ function httpHandler(request, response) {
     Promise.all([getPosts(discussion), bodyOf(request)])
     .then(([posts, body]) => {
       console.log('request body: ' + JSON.stringify(body));
-      let malformed = !body;
+      let malformed = !body || !('instance' in body);
       malformed = malformed || ((postType == 'item') && !(('text' in body) && ('author' in body)));
       malformed = malformed || ((postType == 'tag') && !(('text' in body) && ('author' in body)));
       malformed = malformed || ((postType == 'like') && !('handle' in body));
@@ -345,9 +345,9 @@ function httpHandler(request, response) {
           response.statusCode = 404;
           response.end();
         } else {
-          // FIXME: change to handle@instance
           var l = likedPost.likes || {};
-          l[body.handle] = true;
+          var hi = body.handle + '@' + body.instance;
+          l[hi] = Date.now();
           likedPost.likes = l;
           posts.update(likedPost);
           response.end();
