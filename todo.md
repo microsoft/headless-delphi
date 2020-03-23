@@ -1,13 +1,15 @@
 - General
 
     - In progress
-        - make deploy
-        - make npm package
 
     - Questions
         - admin console with authentication?
         - how to allow starting a new discussion easily?
         - do we need to be able to send notifications to clients?
+    
+    - Not yet
+        - make deploy
+        - make npm package
 
 - Server
 
@@ -29,7 +31,6 @@
         - provide a robots.txt?
 
     - Done
-        - better handling of likes: saves handle@instance and timestamp
 
 - Client
     - In progress
