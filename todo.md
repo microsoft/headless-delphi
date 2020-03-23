@@ -1,5 +1,9 @@
 - General
 
+    - In progress
+        - make deploy
+        - make npm package
+
     - Questions
         - admin console with authentication?
         - how to allow starting a new discussion easily?
@@ -8,7 +12,6 @@
 - Server
 
     - In progress
-        - better logic for shuffle
         - load a real item on GET ITEM
 
     - Questions
@@ -26,10 +29,10 @@
         - provide a robots.txt?
 
     - Done
-        - default PORT to 8000
-        - implement POST /tag: mark the start of a new topic in the discussion
-        - implement GET /shuffle: get a random sample of recent unseen items
-
+        - change database ops that could be async to use promises
+        - use a promise to return the body of a request
+        - better understanding of node.js query semantics
+        - add "use strict"
 
 - Client
     - In progress
@@ -41,7 +44,5 @@
         - change button appearance while waiting for response; prevent repeated clicks when appropriate
 
     - Done
-        - slightly better reactive design
-        - expect shuffle() to return a list of posts
 
 

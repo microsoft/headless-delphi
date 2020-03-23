@@ -1,3 +1,4 @@
+"use strict";
 const http = require('http');
 const path = require('path');
 const fs = require('fs');
@@ -32,55 +33,72 @@ function init() {
   server.listen(process.env.PORT || 8000);
 }
 
-// get the database for a given discussion ID; create/load it if necessary
+// Get the database for a given discussion ID; create/load it if necessary.
+// Returns a promise that waits for loading to finish, then resolves with the db.
 function getDb(discId) {
-  if (discId in dbs) {
-    let db = dbs[discId];
-    return db;
-  } else if (discId in discussionIds) {
-    let db = new loki("data/" + discId, {
-      autoload: true,
-      autosave: true, 
-      autosaveInterval: 4000
-    });
-    dbs[discId] = db;
-    return db;
-  } else {
-    throw new Error("invalid discussion: " + discId);
-  }
-}
-
-// get the posts collection from the given discussion; create it if necessary
-function getPosts(discId) {
-  if (discId in posts) {
-    return posts[discId];
-  } else {
-    var db = getDb(discId);
-    var postcoll = db.getCollection("posts");
-    if (!postcoll) {
-      postcoll = db.addCollection("posts");
-      var lorempost = { text: "#### Lorem ipsum\n\nDolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim $\\int e^xdx$ ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", special: "tag", created: 0, handle: "Cicero", discussion: "5X324", md: true, instance: "000000000000000" };
-      postcoll.insert(lorempost);
+  return new Promise((resolve, reject) => {
+    if (discId in dbs) {
+      resolve(dbs[discId]);
+    } else if (discId in discussionIds) {
+      let db = new loki("data/" + discId, {
+        autoload: true,
+        autosave: true, 
+        autoloadCallback: () => {
+          console.log('finished loading db');
+          dbs[discId] = db;
+          resolve(db);
+        },
+        autosaveInterval: 4000
+      });
+    } else {
+      reject(new Error("invalid discussion: " + discId));
     }
-    posts[discId] = postcoll;
-    return postcoll;  
+  });
+}
+
+// Get the posts collection from the given discussion; create or load it if necessary.
+// Returns a promise that waits for loading to finish, then resolves with the collection.
+function getPosts(discId) {
+  console.log('get posts: ' + discId);
+  if (discId in posts) {
+    console.log('already cached');
+    console.log('length: ' + posts[discId].data.length);
+    return Promise.resolve(posts[discId]);
+  } else {
+    console.log('checking db');
+    return getDb(discId)
+    .then((db) => {
+      let postcoll = db.getCollection("posts");
+      if (!postcoll) {
+        console.log('creating posts')
+        postcoll = db.addCollection("posts");
+        let lorempost = { text: "#### Lorem ipsum\n\nDolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim $\\int e^xdx$ ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", special: "tag", created: 0, handle: "Cicero", discussion: "5X324", md: true, instance: "000000000000000" };
+        postcoll.insert(lorempost);
+      }
+      posts[discId] = postcoll;
+      console.log('length of posts collection: ' + posts[discId].data.length);
+      return postcoll;  
+    });
   }
 }
 
-// get the latest tag post from the given discussion
+// Get the latest tag post from the given discussion; load or create the db or discussion if necessary.
+// Returns a promise that resolves with the tag post.
 function getTag(discId) {
   if (discId in tags) {
-    return tags[discId];
+    return Promise.resolve(tags[discId]);
   } else {
-    var p = getPosts(discId);
-    var sortedtags = p.chain()
-    .find({'special': 'tag'})
-    .simplesort('created')
-    .data();
-    var tag = sortedtags.pop();
-    console.log('tag: ' + JSON.stringify(tag));
-    tags[discId] = tag;
-    return tag;
+    return getPosts(discId)
+    .then((p) => {
+      let sortedtags = p.chain()
+      .find({'special': 'tag'})
+      .simplesort('created')
+      .data();
+      let tag = sortedtags.pop();
+      console.log('tag: ' + JSON.stringify(tag));
+      tags[discId] = tag;
+      return tag;
+    });
   }
 }
 
@@ -91,8 +109,8 @@ function getTag(discId) {
 //    anything else: both ID fields are stripped
 function checkAllowedFields(post, id) {
   const postFields = { text: 1, author: 1, discussion: 1, instance: 1, md: 1, created: 1, special: 1 };
-  var res = {};
-  for (field in postFields) {
+  let res = {};
+  for (let field in postFields) {
     if (field in post) {
       res[field] = post[field];
     }
@@ -109,23 +127,22 @@ function checkAllowedFields(post, id) {
   return res;
 }
 
-// Wait until the body of a request is present, then call handler
-// If an error happens, call errHandler instead
-function bodyOf(request, handler, errHandler) {
+// Make a promise for the JSON content of the body of a request
+// Empty body becomes null
+function bodyOf(request) {
   let body = [];
-  request.on('error', (err) => {
-    console.error(err);
-    errHandler();
-  }).on('data', (d) => {
-    body.push(d);
-  }).on('end', () => {
-    body = Buffer.concat(body).toString();
-    if (body) {
-      body = JSON.parse(body);
-    } else {
-      body = {};
-    }
-    handler(body);
+  return new Promise((resolve, reject) => {
+    request.on('error', (err) => reject(err))
+    .on('data', (d) => body.push(d))
+    .on('end', () => {
+      body = Buffer.concat(body).toString();
+      if (body) {
+        body = JSON.parse(body);
+      } else {
+        body = null;
+      }
+      resolve(body);
+    });
   });
 }
 
@@ -133,10 +150,10 @@ function bodyOf(request, handler, errHandler) {
 // if n > list.length, return the entire list
 function sample(n, list) {
   let len = Math.min(n, list.length);
+  let res = [];
   let permute = Array.from({length: len}, (_, i) => [Math.random(), i]);
   permute.sort((a, b) => a[0] - b[0]);
-  res = [];
-  for (i of permute) {
+  for (let i of permute) {
     res.push(list[i[1]]);
   }
   return res;
@@ -147,30 +164,31 @@ function sample(n, list) {
 // Include only posts after the most recent tag
 // Favor recent posts (recency = number of milliseconds)
 function pickPosts(nPosts, recency, handle, instance, discId) {
-  try {
-    var p = getPosts(discId);
-    var tg = getTag(discId);
-    var hi = handle + '@' + instance;
-    var eligible = p.chain()
+  return Promise.all([getPosts(discId), getTag(discId)])
+  .then(([p, tg]) => {
+    let hi = handle + '@' + instance;
+    let eligible = p.chain()
     .find({'created': {'$gt': tg.created}})
     .where((obj) => (obj.author != handle) || (obj.instance != instance))
     .where((obj) => !(hi in (obj.viewers || {})));
-    console.log('eligible posts: ' + eligible.data.length);
-    var cutoff = Date.now - recency;
-    var recent = eligible.find({'created': {'$gte': cutoff}}).data();
+    console.log('eligible posts: ' + eligible.data().length);
+    let elBranch = eligible.branch();
+    let cutoff = Date.now() - recency;
+    let recent = eligible.find({'created': {'$gte': cutoff}}).data();
     console.log('recent: ' + recent.length);
     if (nPosts <= recent.length) {
       return sample(nPosts, recent);
     } else {
-      var notrecent = eligible.find({'created': {'$lt': cutoff}}).data();
+      let notrecent = elBranch.find({'created': {'$lt': cutoff}}).data();
       console.log('not recent: ' + notrecent.length);
       return recent.concat(sample(nPosts - recent.length, notrecent));
     }  
-  } catch (e) {
+  })
+  .catch((e) => {
     console.error('database search problem: shuffle');
     console.error(e);
     return [];
-  }
+  });
 }
 
 // main handler for HTTP requests
@@ -240,29 +258,42 @@ function httpHandler(request, response) {
         console.log('shuffle');
         let handle = query.get('h');
         let instance = query.get('i');
-        let nPosts = query.get('n');
-        let res = pickPosts(nPosts, 5*60*1000, handle, instance, discussion);
-        for (p of res) {
-          let posts = getPosts(discussion);
-          let viewers = {};
-          if ('viewers' in p) {
-            viewers = p.viewers;
+        let nPosts = Number(query.get('n')) || 0;
+        Promise.all([getPosts(discussion), pickPosts(nPosts, 5*60*1000, handle, instance, discussion)])
+        .then(([posts, picked]) => {
+          console.log('picked: ' + picked);
+          for (let p of picked) {
+            let viewers = {};
+            if ('viewers' in p) {
+              viewers = p.viewers;
+            }
+            viewers[handle + '@' + instance] = Date.now();
+            p.viewers = viewers;
+            posts.update(p);
           }
-          viewers[handle + '@' + instance] = Date.now();
-          p.viewers = viewers;
-          posts.update(p);
-        }
-        console.log("result: " + JSON.stringify(res));
-        res = res.map((x) => checkAllowedFields(x, "out"));
-        console.log("result: " + JSON.stringify(res));
-        response.end(JSON.stringify(res));
+          console.log("result: " + JSON.stringify(picked));
+          picked = picked.map((x) => checkAllowedFields(x, "out"));
+          console.log("result: " + JSON.stringify(picked));
+          response.end(JSON.stringify(picked));
+        })
+        .catch((err) => {
+          console.error('Error while shuffling:' + JSON.stringify(err));
+          response.statusCode = 500;
+          response.end();
+        });
       } else {                                                         // GET ITEM BY ID
-        let posts = getPosts(discussion);
-        let lorempost = posts.findOne({author: "Cicero"});
-        let res = {...lorempost};
-        res = checkAllowedFields(res, "out");
-        // throw new Error("test error");
-        response.end(JSON.stringify(res));
+        getPosts(discussion)
+        .then((posts) => {
+          let lorempost = posts.findOne({author: "Cicero"});
+          let res = {...lorempost};
+          res = checkAllowedFields(res, "out");
+          response.end(JSON.stringify(res));
+        })
+        .catch((err) => {
+          console.error('Error during get item:' + JSON.stringify(err));
+          response.statusCode = 500;
+          response.end();
+        });
       }
     
     // no other GET requests allowed
@@ -274,67 +305,64 @@ function httpHandler(request, response) {
   // handle POST requests -- these pay attention to the body of the request
   } else if (method == 'POST') {
     console.log('post: ' + JSON.stringify(reqpath));
-    let onerr = (err) => {
+    let postType = null;
+    if (reqpath.dir == '/item' && reqpath.base == 'post') {
+      postType = 'item';
+    } else if (reqpath.dir == '/tag') {
+      postType = 'tag';
+    } else if (reqpath.dir == '/like') { 
+      postType = 'like';
+    }
+    Promise.all([getPosts(discussion), bodyOf(request)])
+    .then(([posts, body]) => {
+      console.log('request body: ' + JSON.stringify(body));
+      let malformed = !body;
+      malformed = malformed || ((postType == 'item') && !(('text' in body) && ('author' in body)));
+      malformed = malformed || ((postType == 'tag') && !(('text' in body) && ('author' in body)));
+      malformed = malformed || ((postType == 'like') && !('handle' in body));
+      if (malformed) {
+        console.log("empty or malformed post, ignored")
+        response.statusCode = 400;
+        response.end();
+      } else if (postType == 'item') {                              // POST ITEM
+        console.log('post item');
+        body.created = Date.now();
+        body = checkAllowedFields(body, false);
+        posts.insert(body);
+        response.end(JSON.stringify({ status: 'success', id: body.$loki }))
+      } else if (postType == 'tag') {                               // POST NEW TAG
+        console.log('post tag');
+        body.created = Date.now();
+        body.special = 'tag';
+        body = checkAllowedFields(body, false);
+        posts.insert(body);
+        console.log('inserted tag: ' + JSON.stringify(body));
+        response.end(JSON.stringify({ status: 'success', id: body.$loki }))
+      } else if (postType == 'like') {                              // POST LIKE
+        console.log('post like');
+        let likedPost = posts.get(reqpath.base);
+        if (!likedPost) {
+          response.statusCode = 404;
+          response.end();
+        } else {
+          // FIXME: change to handle@instance
+          var l = likedPost.likes || {};
+          l[body.handle] = true;
+          likedPost.likes = l;
+          posts.update(likedPost);
+          response.end();
+        }
+      } else {                                                      // no other POSTs allowed
+        console.log("unexpected POST type")
+        response.statusCode = 403;
+        response.end();
+      }
+    })
+    .catch((err) => {
+      console.error('Error while posting:' + JSON.stringify(err));
       response.statusCode = 500;
       response.end();
-    };
-    if (reqpath.dir == '/item' && reqpath.base == 'post') {        // POST ITEM
-      bodyOf(request, (body) => {
-        if (body && "text" in body) {
-          body.created = Date.now();
-          body = checkAllowedFields(body, false);
-          let posts = getPosts(discussion);
-          posts.insert(body);
-          console.log(JSON.stringify(body));
-          response.end(JSON.stringify({ status: 'success', id: body.$loki }))
-        } else {
-          console.log("empty or malformed post, ignored")
-          response.statusCode = 400;
-          response.end();
-        }
-      }, onerr);
-    } else if (reqpath.dir == '/tag') {                           // POST NEW TAG
-      bodyOf(request, (body) => {
-        if (body && "text" in body) {
-          body.created = Date.now();
-          body.special = 'tag';
-          body = checkAllowedFields(body, false);
-          let posts = getPosts(discussion);
-          posts.insert(body);
-          console.log(JSON.stringify(body));
-          response.end(JSON.stringify({ status: 'success', id: body.$loki }))
-        } else {
-          console.log("empty or malformed tag post, ignored");
-          response.statusCode = 400;
-          response.end();
-        }
-      }, onerr);
-    } else if (reqpath.dir == '/like') {                           // POST LIKE
-      let posts = getPosts(discussion);
-      var likedPost = posts.get(reqpath.base);
-      if (!likedPost) {
-        response.statusCode = 404;
-        response.end();
-      } else {
-        bodyOf(request, (body) => {
-          if (!body || !("handle" in body)) {
-            response.statusCode = 403;
-            response.end();
-          } else  {
-            var l = likedPost.likes || {};
-            l[body.handle] = true;
-            likedPost.likes = l;
-            posts.update(likedPost);
-            response.end();
-          }
-        }, onerr);
-      }
-
-    // no other POST requests allowed
-    } else {
-      response.statusCode = 403;
-      response.end();
-    }
+    });
 
   // no requests besides GET and POST allowed
   } else {
