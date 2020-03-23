@@ -72,8 +72,8 @@ function getPosts(discId) {
       if (!postcoll) {
         console.log('creating posts')
         postcoll = db.addCollection("posts");
-        let lorempost = { text: "#### Lorem ipsum\n\nDolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim $\\int e^xdx$ ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", special: "tag", created: 0, handle: "Cicero", discussion: "5X324", md: true, instance: "000000000000000" };
-        postcoll.insert(lorempost);
+        let first = { text: "**_discussion start_**", special: "tag", created: Date.now(), discussion: discId, md: true, author: "system", instance: "000000000000000" };
+        postcoll.insert(first);
       }
       posts[discId] = postcoll;
       console.log('length of posts collection: ' + posts[discId].data.length);
@@ -282,8 +282,7 @@ function httpHandler(request, response) {
       } else {                                                         // GET ITEM BY ID
         getPosts(discussion)
         .then((posts) => {
-          let lorempost = posts.findOne({author: "Cicero"});
-          let res = {...lorempost};
+          let res = { text: "#### Lorem ipsum\n\nDolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", special: "lorem", created: 0, author: "Cicero", discussion: "5X324", md: true, instance: "000000000000000" };
           res = checkAllowedFields(res, "out");
           response.end(JSON.stringify(res));
         })
