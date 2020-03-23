@@ -1,14 +1,18 @@
-- Server
-
-    - In progress
-        - shuffle items
-        - load a real item on GET ITEM
+- General
 
     - Questions
         - admin console with authentication?
         - how to allow starting a new discussion easily?
-        - keep a DB of allowed discussionIds?
         - do we need to be able to send notifications to clients?
+
+- Server
+
+    - In progress
+        - better logic for shuffle
+        - load a real item on GET ITEM
+
+    - Questions
+        - keep a DB of allowed discussionIds?
 
     - Not yet
         - make a pass of checking that we catch appropriate errors
@@ -22,15 +26,22 @@
         - provide a robots.txt?
 
     - Done
+        - default PORT to 8000
+        - implement POST /tag: mark the start of a new topic in the discussion
+        - implement GET /shuffle: get a random sample of recent unseen items
 
 
 - Client
     - In progress
+        - better CSS for markdown-enabled posts
+
     - Not yet
         - add recaptcha?
         - don't insert <CR> when we press ctrl-<CR> in the post box
         - change button appearance while waiting for response; prevent repeated clicks when appropriate
+
     - Done
         - slightly better reactive design
+        - expect shuffle() to return a list of posts
 
 

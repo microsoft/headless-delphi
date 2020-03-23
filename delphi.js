@@ -139,14 +139,17 @@ function sendPost(text, useMark) {
   return fetch("item/post?d=" + discussion, fetchData);
 }
 
-function responseBox(res) {
+function responseBox(res, likebut) {
   var id = Number(res.id);
-  return "<div class='response'>" + safeRender(res.text, res.md) +
-    '<span class="but like" id=' + id + '>&#x1F44D;</span></div>';
+  var likestr = '';
+  if (likebut) {
+    likestr = ' <span class="but like" id=' + id + '>&#x1F44D;</span>';
+  }
+  return "<div class='response'>" + safeRender(res.text, res.md) + likestr + '</div>';
 }
 
 function shuffle() {
-  var q = "d=" + discussion + "&h=" + encodeURIComponent(handle) + "&i=" + instance;
+  var q = "d=" + discussion + "&h=" + encodeURIComponent(handle) + "&i=" + instance + "&n=3";
   return fetch("item/shuffle?" + q)
   .then((res) => {
     if (res.ok) {
@@ -158,13 +161,20 @@ function shuffle() {
 }
 
 function responses() {
-  let posts = [];
-  return Promise.all([
-    shuffle().then((res) => { posts.push(responseBox(res)) }),
-    shuffle().then((res) => { posts.push(responseBox(res)) }),
-    shuffle().then((res) => { posts.push(responseBox(res)) })
-  ])
-  .then(() => '<div class="responselist">' + posts.reduce((accum, val) => accum + val.toString()) + '</div>')
+  const emptypost = { id: 0, text: '**_&mdash;[No posts available]&mdash;_**', md: true };
+  return shuffle()
+  .then((x) => { 
+    console.log('res: ' + JSON.stringify(x));
+    return x;
+  })
+  .then((res) => {
+    if (res.length > 0) {
+      return res.map((x) => responseBox(x, true));
+    } else {
+      return [responseBox(emptypost, false)];
+    }
+  })
+  .then((res) => '<div class="responselist">' + res.reduce((accum, val) => accum + val.toString(), '') + '</div>')
   .catch((err) => {
     message("Problem loading new posts; please check to make sure the discussion URL is valid.");
     console.error(err);

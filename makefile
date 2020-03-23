@@ -7,4 +7,7 @@ clean:
 	rm -f data/*
 
 run: bundle.js
-	PORT=8000 node server.js
+	node server.js
+
+debug: bundle.js
+	node inspect server.js
