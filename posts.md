@@ -58,3 +58,21 @@ content
 content
 ###### H6
 content
+
+___
+
+ABRAHAM: Do you bite your thumb at us, sir?
+
+SAMPSON: I do bite my thumb, sir.
+
+ABRAHAM: Do you bite your thumb at us, sir?
+
+SAMPSON [Aside to GREGORY]: Is the law of our side, if I say
+ay?
+
+GREGORY:
+No.
+
+SAMPSON:
+No, sir, I do not bite my thumb at you, sir, but I
+bite my thumb, sir.

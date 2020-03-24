@@ -36,7 +36,7 @@ body {
   border-radius: 2px;
   background-color: #ffffdd;
   margin-right: 2ex;
-  flex-basis: calc(33% - 2ex - 1em - 2px);
+  flex-basis: calc(33.33% - 2ex - 2em - 2px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
