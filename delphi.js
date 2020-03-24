@@ -92,7 +92,7 @@ function safeRender(str, useMark) {
   if (!useMark) {
     str = str.replace(/\n\n+/g, ' <br><br> ');
   }
-  return str;
+  return '<div>' + str + '</div>';
 }
 
 function wait(ms) {
@@ -141,15 +141,12 @@ function sendPost(text, useMark) {
 
 function responseBox(res, likebut) {
   var id = Number(res.id);
+  var posttime = moment(res.created).fromNow();
   var likestr = '';
   if (likebut) {
-    likestr = ' \n<span class="but like" id=' + id + '>&#x1F44D;</span>';
+    likestr = '\n<div class="postbot"><span class="posttime">' + posttime + '</span><span class="like" id=' + id + '>&#x1F44D;</span></div>';
   }
-  if (res.md) {
-    return "<div class='response'>" + safeRender(res.text, true) + likestr + '</div>';
-  } else {
-    return "<div class='response'>" + safeRender(res.text + likestr, false) + '</div>';
-  }
+  return "<div class='response'>" + safeRender(res.text, res.md) + likestr + '</div>';
 }
 
 function shuffle() {

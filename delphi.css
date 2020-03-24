@@ -20,6 +20,8 @@ body {
 }
 .but:active {
   background-color: white;
+  position: relative;
+  left: 2px;
 }
 .responses {
   margin-top: 2ex;
@@ -29,23 +31,41 @@ body {
   display: flex;
 }
 .response {
-  padding: 2ex 3ex;
+  padding: 0.5em 1em;
   border: 1px solid black;
   border-radius: 2px;
   background-color: #ffffdd;
   margin-right: 2ex;
+  flex-basis: calc(33% - 2ex - 6ex - 2px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .mypost {
   border: 1px solid black;
   border-radius: 2px;
   background-color: #ddddff;
   margin-top: 2ex;
-  padding: 1ex 3ex;
+  padding: 0.5em 1em;
   margin-right: 2ex;
 }
+.postbot {
+  margin-top: 0.66em;
+  font-size: x-small;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.posttime {
+  font-weight: bold;
+  font-style: italic;
+}
 .like {
-  float: right;
   margin-left: 1em;
+}
+.like:active {
+  position: relative;
+  left: 2px;
 }
 .messages {
   position: fixed;
