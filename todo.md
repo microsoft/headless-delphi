@@ -4,7 +4,7 @@
 
     - Questions
         - can we allow sketching equations or diagrams with a stylus or finger?
-        - admin console with authentication?
+        - admin console with authentication? create new discussions, enable moderators
         - do we need to be able to send notifications to clients?
         - add a way for moderators to search posts?
         - add a way for moderators to summarize posts?
@@ -18,14 +18,13 @@
 - Server
 
     - In progress
-        - add current software version ID to responses
-        - collect discussion properties into a single object: moderator tokens, title, ...
-        - more secure way for a moderator to prove permission
 
     - Questions
-        - keep a DB of allowed discussionIds?
+        - keep a DB of allowed discussionIds with their titles and modtokens?
 
     - Not yet
+        - add current software version ID to responses
+        - collect discussion properties into a single object: moderator tokens, title, ...
         - load a real item on GET ITEM
         - make a pass of checking that we catch appropriate errors
         - figure out how to exclude .npmignore'd files on deploy
@@ -38,7 +37,8 @@
         - provide a robots.txt?
 
     - Done
-        - add a way to start a new discussion topic (by making a tag post)
+        - add new POST type to let client check if a moderator token is valid
+        - added a list of moderator tokens to metadata (in server code) for each db
 
 - Client
     - In progress
@@ -56,6 +56,4 @@
         - fix extra space to right of responseList?
 
     - Done
-        - add a moderator flag: allows making tag posts, doesn't require first post
-        - add a way to set moderator status on login
-        - add an option to save login info (including moderator status) in localStorage
+        - check moderator token with server; display badge iff valid

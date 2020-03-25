@@ -113,6 +113,11 @@ function init () {
       modkeyinput.blur();
     }
   });
+  modkeyinput.addEventListener("keyup", (e) => {
+    if (e.key == "Enter") {
+      firstRound();
+    }
+  });
   var savecheck = document.getElementById("savelogin");
   savecheck.addEventListener("change", (e) => {
     if (savecheck.checked) {
@@ -297,10 +302,12 @@ function loadMore() {
 }
 
 function firstRound() {
-  var namebox = document.getElementById("name");
+  let namebox = document.getElementById("name");
+  let savecheck = document.getElementById("savelogin");
+  let modtag = document.getElementsByClassName("moderator")[0];
   handle = namebox.value;
   if (handle) {
-    namebox.readOnly = true; // disabled?
+    namebox.readOnly = true;
     namebox.style.backgroundColor = '';
     document.getElementById("postButton").style.display = "inline";
     document.getElementById("startDiscussion").style.display = "none";
@@ -310,20 +317,37 @@ function firstRound() {
     if (upmodbox.checked) {
       var modkey = document.getElementById('modkey');
       moderatorToken = modkey.value;
-      // FIXME: check with server that this is a valid token
     }
-    let modtag = document.getElementsByClassName("moderator")[0];
     if (moderatorToken) {
-      document.getElementById("tagButton").style.display = "inline";
-      document.getElementById("loadButton").style.display = "inline";
-      modtag.style.display = "inline";
+      let fetchData = { 
+        method: "POST", 
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify({ modtoken: moderatorToken, instance: instance })
+      };
+      fetch("mod?d=" + discussion, fetchData)
+      .then((resp) => {
+        if (resp.ok) {
+          document.getElementById("tagButton").style.display = "inline";
+          document.getElementById("loadButton").style.display = "inline";
+          modtag.style.display = "inline";  
+        } else {
+          modtag.style.display = "none";
+          moderatorToken = null;
+          message("Invalid moderator token");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        modtag.style.display = "none";
+        moderatorToken = null;
+        message("Error while validating moderator token");
+      });
     } else {
       modtag.style.display = "none";
     }
     document.getElementsByClassName("round")[0].style.display = "inline";
     document.getElementById("instructions").innerHTML = firstRoundText;
     document.getElementById("postArea").focus();
-    var savecheck = document.getElementById("savelogin");
     savecheck.readonly = true;
     savecheck.disabled = true;
     if (savecheck.checked) {
@@ -387,7 +411,7 @@ function nextTag() {
       postArea.value = "";
       loadMore();
     } else {
-      message("Failed to save post; please check that the discussion URL is valid.");
+      message("Failed to save tag; please check that your moderator key is valid for this discussion.");
     }
   })
   .catch((error) => {

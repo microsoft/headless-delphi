@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const loki = require('lokijs');
 
-const discussionIds = { '5X324': 'Test discussion' };
+const discussionIds = { '5X324': { title: 'Test discussion', modtokens: { '92HA7': 'somebody@example.com' }}};
 
 var server;       // the main HTTP server
 var dbs = {};     // cache: maps discussion IDs to DBs
@@ -221,7 +221,7 @@ function httpHandler(request, response) {
     } else if (reqpath.dir == '/title') {                            // GET TITLE
       console.log('title: ' + reqpath.base);
       if (reqpath.base in discussionIds) {
-        var res = { title: discussionIds[reqpath.base], id: reqpath.base };
+        var res = { title: discussionIds[reqpath.base]['title'], id: reqpath.base };
         response.end(JSON.stringify(res));
       } else {
         response.statusCode = 404;
@@ -309,14 +309,18 @@ function httpHandler(request, response) {
       postType = 'tag';
     } else if (reqpath.dir == '/like') { 
       postType = 'like';
+    } else if ((reqpath.dir == '/') && (reqpath.base == 'mod')) {
+      postType = 'mod';
     }
     Promise.all([getPosts(discussion), bodyOf(request)])
     .then(([posts, body]) => {
       console.log('request body: ' + JSON.stringify(body));
+      console.log('post type: ' + postType);
       let malformed = !body || !('instance' in body);
       malformed = malformed || ((postType == 'item') && !(('text' in body) && ('author' in body)));
-      malformed = malformed || ((postType == 'tag') && !(('text' in body) && ('author' in body)));
+      malformed = malformed || ((postType == 'tag') && !(('text' in body) && ('author' in body) && ('modtoken' in body)));
       malformed = malformed || ((postType == 'like') && !('handle' in body));
+      malformed = malformed || ((postType == 'mod') && !('modtoken' in body));
       if (malformed) {
         console.log("empty or malformed post, ignored")
         response.statusCode = 400;
@@ -331,7 +335,8 @@ function httpHandler(request, response) {
         console.log('post tag');
         body.created = Date.now();
         body.special = 'tag';
-        if (('modtoken' in body) && (body.modtoken == '92HA7')) {
+        console.log('valid keys: ' + discussionIds[discussion].modtokens);
+        if (body.modtoken in discussionIds[discussion].modtokens) {
           delete body.modtoken;
           body = checkAllowedFields(body, false);
           posts.insert(body);
@@ -340,7 +345,7 @@ function httpHandler(request, response) {
           response.end(JSON.stringify({ status: 'success', id: body.$loki }));
         } else {
           console.log('bad moderator token');
-          response.status = 403;
+          response.statusCode = 403;
           response.end();
         }
       } else if (postType == 'like') {                              // POST LIKE
@@ -357,6 +362,14 @@ function httpHandler(request, response) {
           posts.update(likedPost);
           response.end();
         }
+      } else if (postType == 'mod') {                               // POST MOD
+        console.log('post mod');
+        if (body.modtoken in discussionIds[discussion].modtokens) {
+          response.body = JSON.stringify({ status: 'success' });
+        } else {
+          response.statusCode = 403;
+        }
+        response.end();
       } else {                                                      // no other POSTs allowed
         console.log("unexpected POST type")
         response.statusCode = 403;
