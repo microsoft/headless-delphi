@@ -220,7 +220,7 @@ function responseBox(res, likebut) {
   var posttime = moment(res.created).fromNow();
   var likestr = '';
   if (likebut) {
-    likestr = '\n<div class="postbot"><span class="posttime">' + posttime + '</span><span class="like" id=' + id + '>&#x1F44D;</span></div>';
+    likestr = '\n<div class="postbot"><span class="posttime" data-created="' + res.created + '">' + posttime + '</span><span class="like" id=' + id + '>&#x1F44D;</span></div>';
   }
   return "<div class='response'>" + safeRender(res.text, res.md) + likestr + '</div>';
 }
@@ -282,6 +282,15 @@ function successfulPost (postText, useMark, tag) {
   document.getElementById("postArea").focus();
 }
 
+// repeat a function at gradually increasing intervals, maxing at once/hour
+function repeater(interval, fn) {
+  let nextinterval = Math.min(interval * 1.1, 60*60*1000);
+  wait(interval).then(() => {
+    fn();
+    repeater(nextinterval, fn)
+  });
+}
+
 function loadMore() {
   // insertion point
   var ins = document.getElementById("insertion");
@@ -295,6 +304,12 @@ function loadMore() {
     for (let x of r.getElementsByClassName("like")) {
       x.addEventListener("click", () => like(x));
     }
+    let posttimes = r.getElementsByClassName("posttime");
+    repeater(5000, () => {
+      for (let x of posttimes) {
+        x.innerHTML = moment(Number(x.dataset.created)).fromNow();
+      }
+    });
   })
   .catch((err) => {
     console.error(err);

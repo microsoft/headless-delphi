@@ -37,13 +37,10 @@
         - provide a robots.txt?
 
     - Done
-        - add new POST type to let client check if a moderator token is valid
-        - added a list of moderator tokens to metadata (in server code) for each db
 
 - Client
     - In progress
         - change button appearance while waiting for response; prevent repeated clicks when appropriate
-        - update relative times on posts every so often?
         - a way to easily reuse content from past posts? (show source? click to copy source to post box?)
         - a way to easily link to past posts?
 
@@ -56,4 +53,4 @@
         - fix extra space to right of responseList?
 
     - Done
-        - check moderator token with server; display badge iff valid
+        - keep relative times on posts up to date
