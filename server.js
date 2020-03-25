@@ -305,7 +305,7 @@ function httpHandler(request, response) {
     let postType = null;
     if (reqpath.dir == '/item' && reqpath.base == 'post') {
       postType = 'item';
-    } else if (reqpath.dir == '/tag') {
+    } else if (reqpath.dir == '/item' && reqpath.base == 'tag') {
       postType = 'tag';
     } else if (reqpath.dir == '/like') { 
       postType = 'like';
@@ -331,10 +331,18 @@ function httpHandler(request, response) {
         console.log('post tag');
         body.created = Date.now();
         body.special = 'tag';
-        body = checkAllowedFields(body, false);
-        posts.insert(body);
-        console.log('inserted tag: ' + JSON.stringify(body));
-        response.end(JSON.stringify({ status: 'success', id: body.$loki }))
+        if (('modtoken' in body) && (body.modtoken == '92HA7')) {
+          delete body.modtoken;
+          body = checkAllowedFields(body, false);
+          posts.insert(body);
+          delete tags[discussion];
+          console.log('inserted tag: ' + JSON.stringify(body));
+          response.end(JSON.stringify({ status: 'success', id: body.$loki }));
+        } else {
+          console.log('bad moderator token');
+          response.status = 403;
+          response.end();
+        }
       } else if (postType == 'like') {                              // POST LIKE
         console.log('post like');
         let likedPost = posts.get(reqpath.base);

@@ -9,19 +9,18 @@ If you're truly stuck, you can make an empty post, and see some of what your pee
 
 var nextRoundText = "Please read and consider these thoughts from your peers, then enter your thoughts below. If you like, feel free to load more of your peers' posts. Click &#x1F44D; for any contribution you find helpful or relevant &mdash; even if it\'s incomplete. Try to make each of your posts self-contained, since other readers may not have seen the same set of previous posts that you have.<p>"
 
-var initialText = '<h3><span id="title">loading discussion name...</span></h3>Choose your handle for this discussion: <input id="name" autofocus="true" type="text" placeholder="Required">';
+var initialText = '<h3><span id="title">loading discussion name...</span></h3>Choose your handle for this discussion: <input id="name" autofocus="true" type="text" placeholder="Required"> <span class="moderator">Moderator</span><br><div><input id="savelogin" type="checkbox" checked> <label for="savelogin">Save my info on this browser?</label>&nbsp;&nbsp; <input id="upmod" type="checkbox"> <label for="upmod">Update my moderator status?</label></div><div class="modkey"><label for="modkey">Moderator key:</label> <input id="modkey" type="password"></div>';
 
 var handle = "Anonymous Wombat";
-
 var instance = null;
 var discussion = null;
-
+var moderatorToken = null;
 
 document.addEventListener('DOMContentLoaded', init);
 
 function init () {
 
-  // check for (and save) discussion ID
+  // check for (and remember) discussion ID
   var requrl = new URL(window.location.href);
   var query = new URLSearchParams(requrl.search);
   discussion = query.get('d');
@@ -31,6 +30,24 @@ function init () {
 
   // assign a pseudorandom instance ID for this session, long enough to be unlikely to collide
   instance = randStr(15);
+
+  // check for saved info in local storage
+  var savedlogin = null;
+  if (localStorage) {
+    savedlogin = localStorage.getItem('savedlogin:' + discussion);
+    if (savedlogin) {
+      try {
+        savedlogin = JSON.parse(savedlogin);
+      } catch (e) {
+        savedlogin = null;
+        console.error(e);
+      }
+    }
+    if (savedlogin) {
+      instance = ('instance' in savedlogin) && savedlogin.instance;
+      moderatorToken = ('modtoken' in savedlogin) && savedlogin.modtoken;
+    }
+  }
 
   // load discussion title from server
   fetch("title/" + discussion)
@@ -50,8 +67,16 @@ function init () {
     console.error(err);
   });
 
-  // set up initial page
+  // set up initial page; load saved info; if the user claims to be a moderator, check with server
   document.getElementsByClassName("initial")[0].innerHTML = initialText;
+  let modtag = document.getElementsByClassName("moderator")[0];
+  var namebox = document.getElementById("name");
+  if (savedlogin && ('handle' in savedlogin)) {
+    namebox.value = savedlogin.handle;
+  }
+  if (moderatorToken) {
+    modtag.style.display = "inline";
+  }
   document.getElementById("startDiscussion").style.display = "inline";
 
   // add event listeners to buttons and dialog boxes
@@ -61,7 +86,8 @@ function init () {
   postbut.addEventListener("click", nextRound);
   var loadbut = document.getElementById("loadButton");
   loadbut.addEventListener("click", loadMore);
-  var namebox = document.getElementById("name");
+  var tagbut = document.getElementById("tagButton");
+  tagbut.addEventListener("click", nextTag);
   wait(300).then(() => {
     namebox.addEventListener("keyup", (e) => {
       if (e.key == "Enter") {
@@ -73,6 +99,46 @@ function init () {
   postArea.addEventListener("keyup", (e) => {
     if (e.key == "Enter" && e.ctrlKey) {
       nextRound();
+    }
+  });
+  var upmoddiv = document.getElementsByClassName('modkey')[0];
+  var upmodbox = document.getElementById('upmod');
+  var modkeyinput = document.getElementById('modkey');
+  upmodbox.addEventListener("change", (e) => {
+    if (upmodbox.checked) {
+      upmoddiv.style.display = "inline";
+      modkeyinput.focus()
+    } else {
+      upmoddiv.style.display = "none";
+      modkeyinput.blur();
+    }
+  });
+  var savecheck = document.getElementById("savelogin");
+  savecheck.addEventListener("change", (e) => {
+    if (savecheck.checked) {
+      if (savedlogin) {
+        if (!namebox.value && ('handle' in savedlogin)) {
+          namebox.value = savedlogin.handle;
+        }
+        if ('instance' in savedlogin) {
+          instance = savedlogin.instance;
+        }
+        if ('modtoken' in savedlogin) {
+          moderatorToken = savedlogin.modtoken;
+        }
+        localStorage.setItem('savedlogin:' + discussion, JSON.stringify(savedlogin));
+      }
+      if (moderatorToken) {
+        modtag.style.display = "inline";
+      }
+    } else {
+      if (savedlogin && ('handle' in savedlogin) && (namebox.value == savedlogin.handle)) {
+        namebox.value = "";
+      }
+      instance = randStr(15);
+      moderatorToken = null;
+      modtag.style.display = "none";
+      localStorage.removeItem('savedlogin:' + discussion);
     }
   });
 }
@@ -123,7 +189,7 @@ function like(x) {
   });
 }
 
-function sendPost(text, useMark) {
+function sendPost(text, useMark, tag) {
   var doc = {
     text: text,
     md: useMark,
@@ -131,12 +197,17 @@ function sendPost(text, useMark) {
     author: handle,
     instance: instance
   }
+  var url = "item/post?d=" + discussion;
+  if (tag) {
+    doc.modtoken = moderatorToken;
+    url = "item/tag?d=" + discussion;
+  }
   var fetchData = { 
     method: "POST", 
     headers: { "Content-Type": "application/json"},
     body: JSON.stringify(doc)
   };
-  return fetch("item/post?d=" + discussion, fetchData);
+  return fetch(url, fetchData);
 }
 
 function responseBox(res, likebut) {
@@ -179,11 +250,17 @@ function responses() {
 }
 
 // update display on receiving confirmation of a successful post
-function successfulPost (postText, useMark) {
+function successfulPost (postText, useMark, tag) {
 
   // mark empty posts
   if (!postText) {
     postText = "[empty post]";
+  }
+
+  // different element class depending on whether it's a tag
+  var divHtml = "<div class='mypost'>";
+  if (tag) {
+    divHtml = "<div class='mypost tagpost'>"
   }
 
   // get insertion point
@@ -191,7 +268,7 @@ function successfulPost (postText, useMark) {
 
   // move the user's post up to the history
   var r = document.createElement("div");
-  r.innerHTML = "<div class='mypost'>" + safeRender(postText, useMark) + "</div>";
+  r.innerHTML = divHtml + safeRender(postText, useMark) + "</div>";
   ins.parentNode.insertBefore(r, ins);
 
   // update instructions and enable load button
@@ -223,13 +300,43 @@ function firstRound() {
   var namebox = document.getElementById("name");
   handle = namebox.value;
   if (handle) {
-    namebox.readOnly = true;
+    namebox.readOnly = true; // disabled?
     namebox.style.backgroundColor = '';
     document.getElementById("postButton").style.display = "inline";
     document.getElementById("startDiscussion").style.display = "none";
+    var upmodbox = document.getElementById('upmod');
+    upmodbox.readonly = true;
+    upmodbox.disabled = true;
+    if (upmodbox.checked) {
+      var modkey = document.getElementById('modkey');
+      moderatorToken = modkey.value;
+      // FIXME: check with server that this is a valid token
+    }
+    let modtag = document.getElementsByClassName("moderator")[0];
+    if (moderatorToken) {
+      document.getElementById("tagButton").style.display = "inline";
+      document.getElementById("loadButton").style.display = "inline";
+      modtag.style.display = "inline";
+    } else {
+      modtag.style.display = "none";
+    }
     document.getElementsByClassName("round")[0].style.display = "inline";
     document.getElementById("instructions").innerHTML = firstRoundText;
     document.getElementById("postArea").focus();
+    var savecheck = document.getElementById("savelogin");
+    savecheck.readonly = true;
+    savecheck.disabled = true;
+    if (savecheck.checked) {
+      if (localStorage) {
+        localStorage.setItem('savedlogin:' + discussion, JSON.stringify({
+          handle: handle,
+          instance: instance,
+          modtoken: moderatorToken
+        }));
+      } else {
+        message("Couldn't save info on this browser: local storage not available");
+      }
+    } 
   } else {
     namebox.style.backgroundColor = '#ffaaaa';
   }
@@ -244,10 +351,10 @@ function nextRound() {
 
   // insert user's post
   if (postText) {
-    sendPost(postText, useMark)
+    sendPost(postText, useMark, false)
     .then((res) => {
       if (res.ok) {
-        successfulPost(postText, useMark);
+        successfulPost(postText, useMark, false);
         postArea.value = "";
         loadMore();
       } else {
@@ -259,9 +366,33 @@ function nextRound() {
       console.error("Error: " + JSON.stringify(error));
     });
   } else {
-    successfulPost("");
+    successfulPost("", false, false);
     postArea.value = "";
     loadMore();
   }
+}
+
+function nextTag() {
+
+  // get the user's post text
+  var postArea = document.getElementById("postArea");
+  var postText = postArea.value.trim();
+  var useMark = document.getElementById("usemd").checked;
+
+  // insert user's post
+  sendPost(postText, useMark, true)
+  .then((res) => {
+    if (res.ok) {
+      successfulPost(postText, useMark, true);
+      postArea.value = "";
+      loadMore();
+    } else {
+      message("Failed to save post; please check that the discussion URL is valid.");
+    }
+  })
+  .catch((error) => {
+    message('Error saving the post; please try again');
+    console.error("Error: " + JSON.stringify(error));
+  });
 }
 

@@ -23,9 +23,9 @@ body {
   position: relative;
   left: 2px;
 }
-.responses {
+/* .responses {
   margin-top: 2ex;
-}
+} */
 .responselist {
   margin-top: 2ex;
   display: flex;
@@ -37,6 +37,7 @@ body {
   background-color: #ffffdd;
   margin-right: 2ex;
   flex-basis: calc(33.33% - 2ex - 2em - 2px);
+  min-width: calc(33.33% - 2ex - 2em - 2px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -48,6 +49,9 @@ body {
   margin-top: 2ex;
   padding: 0.5em 1em;
   margin-right: 2ex;
+}
+.tagpost {
+  background-color: #bb88dd
 }
 .postbot {
   margin-top: 0.66em;
@@ -102,6 +106,9 @@ body {
   display: none;
 }
 #startDiscussion {
+  display: none;
+}
+#tagButton {
   display: none;
 }
 .fineprint {
@@ -165,4 +172,15 @@ label {
   margin-top: 0.5em;
   margin-bottom: 0.75em;
 }
-
+.moderator {
+  font-size: xx-small;
+  background-color: darkgreen;
+  color: white;
+  border: 1px solid black;
+  border-radius: 3px;
+  padding: 2px;
+  display: none;
+}
+.modkey {
+  display: none;
+}

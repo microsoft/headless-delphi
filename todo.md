@@ -3,11 +3,13 @@
     - In progress
 
     - Questions
+        - can we allow sketching equations or diagrams with a stylus or finger?
         - admin console with authentication?
-        - how to allow starting a new discussion easily?
         - do we need to be able to send notifications to clients?
-        - a way for moderators to search posts?
-        - a way for moderators to summarize posts?
+        - add a way for moderators to search posts?
+        - add a way for moderators to summarize posts?
+        - add a way for moderators to go back and view older topics?
+        - add a way for moderators (and maybe ordinary users) to clear viewed status (to re-see older posts)?
     
     - Not yet
         - make deploy
@@ -16,6 +18,9 @@
 - Server
 
     - In progress
+        - add current software version ID to responses
+        - collect discussion properties into a single object: moderator tokens, title, ...
+        - more secure way for a moderator to prove permission
 
     - Questions
         - keep a DB of allowed discussionIds?
@@ -33,16 +38,24 @@
         - provide a robots.txt?
 
     - Done
+        - add a way to start a new discussion topic (by making a tag post)
 
 - Client
     - In progress
+        - change button appearance while waiting for response; prevent repeated clicks when appropriate
+        - update relative times on posts every so often?
+        - a way to easily reuse content from past posts? (show source? click to copy source to post box?)
+        - a way to easily link to past posts?
 
     - Not yet
+        - add version ID
+        - check to see if we're out of date by comparing to server version ID
+        - post previews for markdown
         - add recaptcha?
         - don't insert <CR> when we press ctrl-<CR> in the post box
-        - change button appearance while waiting for response; prevent repeated clicks when appropriate
+        - fix extra space to right of responseList?
 
     - Done
-        - add "use strict"
-        - better CSS for markdown-enabled posts
-        - show age of posts, better CSS for like and date
+        - add a moderator flag: allows making tag posts, doesn't require first post
+        - add a way to set moderator status on login
+        - add an option to save login info (including moderator status) in localStorage
