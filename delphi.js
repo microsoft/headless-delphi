@@ -227,6 +227,7 @@ function sendPost(text, useMark, tag) {
   return fetch(url, fetchData);
 }
 
+// construct the HTML for a box that shows someone's post (along with stuff like date, a like button, etc.)
 function responseBox(res, likebut) {
   let out = '<div class="cooked">' + safeRender(res.text, res.md) + '</div>';
   if (likebut) {
@@ -257,6 +258,7 @@ function responseBox(res, likebut) {
   return d;
 }
 
+// fetch a random set of up to 3 posts
 function shuffle() {
   var q = "d=" + discussion + "&h=" + encodeURIComponent(handle) + "&i=" + instance + "&n=3";
   return fetch("item/shuffle?" + q)
@@ -269,6 +271,7 @@ function shuffle() {
   })
 }
 
+// construct a row of the feed
 function responses() {
   const emptypost = { id: 0, text: '_No posts available, please load more in a bit..._', md: true };
   return shuffle()
@@ -279,7 +282,6 @@ function responses() {
       return [responseBox(emptypost, false)];
     }
   })
-  // .then((res) => '<div class="responselist">' + res.reduce((accum, val) => accum + val.toString(), '') + '</div>')
   .then((res) => {
     let d = document.createElement('div');
     d.classList.add('responselist');
@@ -331,6 +333,7 @@ function repeater(interval, fn) {
   });
 }
 
+// callback for "Load more" button
 function loadMore() {
   // insertion point
   var ins = document.getElementById("insertion");
@@ -351,6 +354,7 @@ function loadMore() {
   });
 }
 
+// start the first round (can't see others' posts yet, allow user to make post)
 function firstRound() {
   let namebox = document.getElementById("name");
   let savecheck = document.getElementById("savelogin");
@@ -416,6 +420,7 @@ function firstRound() {
   }
 }
 
+// start any round except the first (update the feed and wait for another post fro the user)
 function nextRound() {
 
   // get the user's post text
@@ -446,6 +451,7 @@ function nextRound() {
   }
 }
 
+// make a tag post (just like nextRound except no requirement for nonempty text, have to check moderator key)
 function nextTag() {
 
   // get the user's post text
@@ -465,7 +471,7 @@ function nextTag() {
     }
   })
   .catch((error) => {
-    message('Error saving the post; please try again');
+    message('Error saving the new tag; please try again');
     console.error("Error: " + JSON.stringify(error));
   });
 }
