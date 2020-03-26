@@ -10,18 +10,17 @@
         - add a way for moderators to summarize posts?
         - add a way for moderators to go back and view older topics?
         - add a way for moderators (and maybe ordinary users) to clear viewed status (to re-see older posts)?
+        - add an interface for users or moderators to create subgroups/breakouts within a discussion?
     
     - Not yet
-        - make deploy
+        - add a way to use Azure CLI to zipdeploy
         - make npm package
     
     - Done
-        - added a make target to collect files for the site into a zip file (which VS Code can then deploy)
 
 - Server
 
     - In progress
-        - fix randomness problem
 
     - Questions
         - keep a DB of allowed discussionIds with their titles and modtokens?
@@ -41,10 +40,11 @@
         - provide a robots.txt?
 
     - Done
+        - fix randomness problem
+        - associate each discussion with an identifying color
 
 - Client
     - In progress
-        - fix "show raw" appearing in front of messages
 
     - Questions
         - good way to show post previews for markdown?
@@ -56,8 +56,7 @@
         - check to see if we're out of date by comparing to server version ID
         - add recaptcha?
         - don't insert <CR> when we press ctrl-<CR> in the post box
-        - fix extra space to right of responseList?
 
     - Done
-        - keep relative times on posts up to date
-        - make it easier to reuse content from past posts by adding option to show source
+        - floating indicator of which discussion we're looking at
+        - fix "show raw" appearing in front of messages

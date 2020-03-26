@@ -80,6 +80,7 @@ body {
   right: 20%;
   background-color: white;
   border-radius: 5px;
+  z-index: 10;
 }
 .message {
   border: 1px solid black;
@@ -96,7 +97,7 @@ body {
   animation-fill-mode: forwards;
 }
 #title {
-  color: grey;
+  color: #444444;
 }
 #instructions {
   margin-top: 2ex;
@@ -198,4 +199,19 @@ label {
   border-radius: 2px;
   overflow: auto;
   display: none;
+}
+#floater {
+  position: fixed;
+  top: 1em;
+  right: 1em;
+  width: 20%;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 0.3em;
+  text-align: center;
+  overflow: auto;
+  font-size: small;
+  color: #444444;
+  font-style: italic;
+  font-weight: bold;
 }

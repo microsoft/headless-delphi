@@ -9,11 +9,11 @@ clean:
 run: bundle.js
 	node server.js
 
-deploy.zip: bundle.js delphi.css delphi.html favicon.ico package.json server.js
+zip: bundle.js delphi.css delphi.html favicon.ico package.json server.js
 	zip deploy bundle.js delphi.css delphi.html favicon.ico package.json server.js 
 	zip -r deploy node_modules/
 
-# for zip deploy: would use the following, but FTP credentials don't seem to work
+# for zipdeploy: would use the following, but FTP credentials don't seem to work
 #	curl -X POST -u 'headless-delphi\$headless-delphi' https://headless-delphi.scm.azurewebsites.net/api/zipdeploy -T deploy.zip
 
 debug: bundle.js

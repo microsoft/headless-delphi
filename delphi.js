@@ -61,6 +61,8 @@ function init () {
   })
   .then((res) => {
     document.getElementById("title").textContent = res.title;
+    document.getElementById("floater").textContent = res.title;
+    document.getElementById("floater").style.backgroundColor = res.bgcolor;
   })
   .catch((err) => {
     message("Problem fetching discussion info.");
@@ -327,11 +329,11 @@ function successfulPost (postText, useMark, tag) {
 }
 
 // repeat a function at gradually increasing intervals, maxing at once/hour
-function repeater(interval, fn) {
-  let nextinterval = Math.min(interval * 1.1, 60*60*1000);
+function repeater(interval, scale, max, fn) {
+  let nextinterval = Math.min(interval * scale, max);
   wait(interval).then(() => {
     fn();
-    repeater(nextinterval, fn)
+    repeater(nextinterval, scale, max, fn);
   });
 }
 
@@ -345,7 +347,7 @@ function loadMore() {
   .then((resp) => {
     ins.parentNode.insertBefore(resp, ins);
     let posttimes = resp.getElementsByClassName("posttime");
-    repeater(5000, () => {
+    repeater(5000, 1.1, 60*60*1000, () => {
       for (let x of posttimes) {
         x.innerHTML = moment(Number(x.dataset.created)).fromNow();
       }

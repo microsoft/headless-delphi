@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const loki = require('lokijs');
 
-const discussionIds = { '5X324': { title: 'Test discussion', modtokens: { '92HA7': 'somebody@example.com' }}};
+const discussionIds = { '5X324': { title: 'Test discussion', bgcolor: '#7090c0', modtokens: { '92HA7': 'somebody@example.com' }}};
 
 var server;       // the main HTTP server
 var dbs = {};     // cache: maps discussion IDs to DBs
@@ -221,7 +221,11 @@ function httpHandler(request, response) {
       return;
     } else if (reqpath.dir == '/title') {                            // GET TITLE
       if (reqpath.base in discussionIds) {
-        var res = { title: discussionIds[reqpath.base]['title'], id: reqpath.base };
+        var res = { 
+          title: discussionIds[reqpath.base]['title'], 
+          bgcolor: discussionIds[reqpath.base]['bgcolor'] || 'auto', 
+          id: reqpath.base 
+        };
         response.end(JSON.stringify(res));
       } else {
         response.statusCode = 404;
