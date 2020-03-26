@@ -241,20 +241,22 @@ function responseBox(res, likebut) {
   let d = document.createElement('div');
   d.classList.add("response");
   d.innerHTML = out;
-  let raw = d.getElementsByClassName('raw')[0];
-  let cooked = d.getElementsByClassName('cooked')[0];
-  let lik = d.getElementsByClassName("like")[0];
-  lik.addEventListener("click", () => like(lik));
-  let rc = d.getElementsByTagName("input")[0];
-  rc.addEventListener("change", () => {
-    if (rc.checked) {
-      raw.style.display = "inline";
-      cooked.style.display = "none";
-    } else {
-      cooked.style.display = "inline";
-      raw.style.display = "none";
-    }
-  })
+  if (likebut) {
+    let raw = d.getElementsByClassName('raw')[0];
+    let cooked = d.getElementsByClassName('cooked')[0];
+    let lik = d.getElementsByClassName("like")[0];
+    lik.addEventListener("click", () => like(lik));
+    let rc = d.getElementsByTagName("input")[0];
+    rc.addEventListener("change", () => {
+      if (rc.checked) {
+        raw.style.display = "inline";
+        cooked.style.display = "none";
+      } else {
+        cooked.style.display = "inline";
+        raw.style.display = "none";
+      }
+    })
+  }
   return d;
 }
 

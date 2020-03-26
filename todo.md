@@ -14,10 +14,14 @@
     - Not yet
         - make deploy
         - make npm package
+    
+    - Done
+        - added a make target to collect files for the site into a zip file (which VS Code can then deploy)
 
 - Server
 
     - In progress
+        - fix randomness problem
 
     - Questions
         - keep a DB of allowed discussionIds with their titles and modtokens?
@@ -40,6 +44,7 @@
 
 - Client
     - In progress
+        - fix "show raw" appearing in front of messages
 
     - Questions
         - good way to show post previews for markdown?

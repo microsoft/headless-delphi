@@ -149,10 +149,11 @@ function bodyOf(request) {
 // sample n items without replacement from a list
 // if n > list.length, return the entire list
 function sample(n, list) {
-  let len = Math.min(n, list.length);
   let res = [];
-  let permute = Array.from({length: len}, (_, i) => [Math.random(), i]);
+  let permute = Array.from({length: list.length}, (_, i) => [Math.random(), i]);
   permute.sort((a, b) => a[0] - b[0]);
+  permute = permute.slice(0, n);
+  console.log(JSON.stringify(permute));
   for (let i of permute) {
     res.push(list[i[1]]);
   }
@@ -171,11 +172,11 @@ function pickPosts(nPosts, recency, handle, instance, discId) {
     .find({'created': {'$gt': tg.created}})
     .where((obj) => (obj.author != handle) || (obj.instance != instance))
     .where((obj) => !(hi in (obj.viewers || {})));
-    // console.log('eligible posts: ' + eligible.data().length);
+    console.log('eligible posts: ' + eligible.data().length);
     let elBranch = eligible.branch();
     let cutoff = Date.now() - recency;
     let recent = eligible.find({'created': {'$gte': cutoff}}).data();
-    // console.log('recent: ' + recent.length);
+    console.log('recent: ' + recent.length);
     if (nPosts <= recent.length) {
       return sample(nPosts, recent);
     } else {
