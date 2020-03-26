@@ -40,17 +40,19 @@
 
 - Client
     - In progress
-        - change button appearance while waiting for response; prevent repeated clicks when appropriate
-        - a way to easily reuse content from past posts? (show source? click to copy source to post box?)
-        - a way to easily link to past posts?
+
+    - Questions
+        - good way to show post previews for markdown?
 
     - Not yet
+        - add a way to easily link to past posts
+        - for post, load, tag: change button appearance while waiting for response; prevent repeated clicks
         - add version ID
         - check to see if we're out of date by comparing to server version ID
-        - post previews for markdown
         - add recaptcha?
         - don't insert <CR> when we press ctrl-<CR> in the post box
         - fix extra space to right of responseList?
 
     - Done
         - keep relative times on posts up to date
+        - make it easier to reuse content from past posts by adding option to show source

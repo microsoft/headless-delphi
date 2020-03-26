@@ -41,6 +41,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow: auto;
 }
 .mypost {
   border: 1px solid black;
@@ -49,6 +50,7 @@ body {
   margin-top: 2ex;
   padding: 0.5em 1em;
   margin-right: 2ex;
+  overflow: auto;
 }
 .tagpost {
   background-color: #bb88dd
@@ -182,5 +184,18 @@ label {
   display: none;
 }
 .modkey {
+  display: none;
+}
+.showraw {
+  font-size: xx-small;
+  font-style: italic;
+  position: relative;
+  top: 0.2em;
+}
+.raw {
+  color: #333333;
+  background-color: #bebe7e;
+  border-radius: 2px;
+  overflow: auto;
   display: none;
 }

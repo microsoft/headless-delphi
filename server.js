@@ -59,24 +59,24 @@ function getDb(discId) {
 // Get the posts collection from the given discussion; create or load it if necessary.
 // Returns a promise that waits for loading to finish, then resolves with the collection.
 function getPosts(discId) {
-  console.log('get posts: ' + discId);
+  // console.log('get posts: ' + discId);
   if (discId in posts) {
-    console.log('already cached');
-    console.log('length: ' + posts[discId].data.length);
+    // console.log('already cached');
+    // console.log('length: ' + posts[discId].data.length);
     return Promise.resolve(posts[discId]);
   } else {
-    console.log('checking db');
+    // console.log('checking db');
     return getDb(discId)
     .then((db) => {
       let postcoll = db.getCollection("posts");
       if (!postcoll) {
-        console.log('creating posts')
+        // console.log('creating posts')
         postcoll = db.addCollection("posts");
         let first = { text: "**_discussion start_**", special: "tag", created: Date.now(), discussion: discId, md: true, author: "system", instance: "000000000000000" };
         postcoll.insert(first);
       }
       posts[discId] = postcoll;
-      console.log('length of posts collection: ' + posts[discId].data.length);
+      // console.log('length of posts collection: ' + posts[discId].data.length);
       return postcoll;  
     });
   }
@@ -95,7 +95,7 @@ function getTag(discId) {
       .simplesort('created')
       .data();
       let tag = sortedtags.pop();
-      console.log('tag: ' + JSON.stringify(tag));
+      // console.log('tag: ' + JSON.stringify(tag));
       tags[discId] = tag;
       return tag;
     });
@@ -171,16 +171,16 @@ function pickPosts(nPosts, recency, handle, instance, discId) {
     .find({'created': {'$gt': tg.created}})
     .where((obj) => (obj.author != handle) || (obj.instance != instance))
     .where((obj) => !(hi in (obj.viewers || {})));
-    console.log('eligible posts: ' + eligible.data().length);
+    // console.log('eligible posts: ' + eligible.data().length);
     let elBranch = eligible.branch();
     let cutoff = Date.now() - recency;
     let recent = eligible.find({'created': {'$gte': cutoff}}).data();
-    console.log('recent: ' + recent.length);
+    // console.log('recent: ' + recent.length);
     if (nPosts <= recent.length) {
       return sample(nPosts, recent);
     } else {
       let notrecent = elBranch.find({'created': {'$lt': cutoff}}).data();
-      console.log('not recent: ' + notrecent.length);
+      // console.log('not recent: ' + notrecent.length);
       return recent.concat(sample(nPosts - recent.length, notrecent));
     }  
   })
@@ -201,7 +201,7 @@ function httpHandler(request, response) {
 
   // handle GET for a subset of URLs without requiring a discussion ID
   if (method == 'GET') {
-    console.log('get: ' + JSON.stringify(reqpath));
+    // console.log('get: ' + JSON.stringify(reqpath));
     if (reqpath.dir == '/css') {                                     // GET CSS
       if (reqpath.base == 'delphi.css') {
         fs.createReadStream('delphi.css').pipe(response);
@@ -219,7 +219,6 @@ function httpHandler(request, response) {
       }
       return;
     } else if (reqpath.dir == '/title') {                            // GET TITLE
-      console.log('title: ' + reqpath.base);
       if (reqpath.base in discussionIds) {
         var res = { title: discussionIds[reqpath.base]['title'], id: reqpath.base };
         response.end(JSON.stringify(res));
@@ -242,7 +241,7 @@ function httpHandler(request, response) {
   // all other interactions require a valid discussion ID
   var discussion = query.get('d');
   if (!(discussion in discussionIds)) {
-    console.log('invalid discussion: ' + discussion);
+    // console.log('invalid discussion: ' + discussion);
     response.statusCode = 404;
     response.end();
     return;
@@ -251,15 +250,15 @@ function httpHandler(request, response) {
   // remaining GET requests
   if (method == 'GET') {
     if (reqpath.dir == '/item') {
-      console.log('item: ' + reqpath.base);
+      // console.log('item: ' + reqpath.base);
       if (reqpath.base == "shuffle") {                                 // GET SHUFFLED ITEM
-        console.log('shuffle');
+        // console.log('shuffle');
         let handle = query.get('h');
         let instance = query.get('i');
         let nPosts = Number(query.get('n')) || 0;
         Promise.all([getPosts(discussion), pickPosts(nPosts, 5*60*1000, handle, instance, discussion)])
         .then(([posts, picked]) => {
-          console.log('picked: ' + picked);
+          // console.log('picked: ' + picked);
           for (let p of picked) {
             let viewers = {};
             if ('viewers' in p) {
@@ -269,9 +268,9 @@ function httpHandler(request, response) {
             p.viewers = viewers;
             posts.update(p);
           }
-          console.log("result: " + JSON.stringify(picked));
+          // console.log("result: " + JSON.stringify(picked));
           picked = picked.map((x) => checkAllowedFields(x, "out"));
-          console.log("result: " + JSON.stringify(picked));
+          // console.log("result: " + JSON.stringify(picked));
           response.end(JSON.stringify(picked));
         })
         .catch((err) => {
@@ -301,7 +300,7 @@ function httpHandler(request, response) {
 
   // handle POST requests -- these pay attention to the body of the request
   } else if (method == 'POST') {
-    console.log('post: ' + JSON.stringify(reqpath));
+    // console.log('post: ' + JSON.stringify(reqpath));
     let postType = null;
     if (reqpath.dir == '/item' && reqpath.base == 'post') {
       postType = 'item';
@@ -314,8 +313,8 @@ function httpHandler(request, response) {
     }
     Promise.all([getPosts(discussion), bodyOf(request)])
     .then(([posts, body]) => {
-      console.log('request body: ' + JSON.stringify(body));
-      console.log('post type: ' + postType);
+      // console.log('request body: ' + JSON.stringify(body));
+      // console.log('post type: ' + postType);
       let malformed = !body || !('instance' in body);
       malformed = malformed || ((postType == 'item') && !(('text' in body) && ('author' in body)));
       malformed = malformed || ((postType == 'tag') && !(('text' in body) && ('author' in body) && ('modtoken' in body)));
@@ -326,22 +325,22 @@ function httpHandler(request, response) {
         response.statusCode = 400;
         response.end();
       } else if (postType == 'item') {                              // POST ITEM
-        console.log('post item');
+        // console.log('post item');
         body.created = Date.now();
         body = checkAllowedFields(body, false);
         posts.insert(body);
         response.end(JSON.stringify({ status: 'success', id: body.$loki }))
       } else if (postType == 'tag') {                               // POST NEW TAG
-        console.log('post tag');
+        // console.log('post tag');
         body.created = Date.now();
         body.special = 'tag';
-        console.log('valid keys: ' + discussionIds[discussion].modtokens);
+        // console.log('valid keys: ' + discussionIds[discussion].modtokens);
         if (body.modtoken in discussionIds[discussion].modtokens) {
           delete body.modtoken;
           body = checkAllowedFields(body, false);
           posts.insert(body);
           delete tags[discussion];
-          console.log('inserted tag: ' + JSON.stringify(body));
+          // console.log('inserted tag: ' + JSON.stringify(body));
           response.end(JSON.stringify({ status: 'success', id: body.$loki }));
         } else {
           console.log('bad moderator token');
@@ -349,7 +348,7 @@ function httpHandler(request, response) {
           response.end();
         }
       } else if (postType == 'like') {                              // POST LIKE
-        console.log('post like');
+        // console.log('post like');
         let likedPost = posts.get(reqpath.base);
         if (!likedPost) {
           response.statusCode = 404;
@@ -363,7 +362,7 @@ function httpHandler(request, response) {
           response.end();
         }
       } else if (postType == 'mod') {                               // POST MOD
-        console.log('post mod');
+        // console.log('post mod');
         if (body.modtoken in discussionIds[discussion].modtokens) {
           response.body = JSON.stringify({ status: 'success' });
         } else {

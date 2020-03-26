@@ -4,12 +4,12 @@ var md = require('markdown-it')(),
 md.use(mk);
 var pur = require('dompurify');
 
+var initialText = '<h3><span id="title">loading discussion name...</span></h3>Choose your handle for this discussion: <input id="name" autofocus="true" type="text" placeholder="Required"> <span class="moderator">Moderator</span><br><div><input id="savelogin" type="checkbox" checked> <label for="savelogin">Save my info on this browser?</label>&nbsp;&nbsp; <input id="upmod" type="checkbox"> <label for="upmod">Update my moderator status?</label></div><div class="modkey"><label for="modkey">Moderator key:</label> <input id="modkey" type="password"></div>';
+
 var firstRoundText = "Enter your thoughts below. It's fine if you don't address everything; just contribute as much as you can. \
 If you're truly stuck, you can make an empty post, and see some of what your peers are saying.<p>"
 
-var nextRoundText = "Please read and consider these thoughts from your peers, then enter your thoughts below. If you like, feel free to load more of your peers' posts. Click &#x1F44D; for any contribution you find helpful or relevant &mdash; even if it\'s incomplete. Try to make each of your posts self-contained, since other readers may not have seen the same set of previous posts that you have.<p>"
-
-var initialText = '<h3><span id="title">loading discussion name...</span></h3>Choose your handle for this discussion: <input id="name" autofocus="true" type="text" placeholder="Required"> <span class="moderator">Moderator</span><br><div><input id="savelogin" type="checkbox" checked> <label for="savelogin">Save my info on this browser?</label>&nbsp;&nbsp; <input id="upmod" type="checkbox"> <label for="upmod">Update my moderator status?</label></div><div class="modkey"><label for="modkey">Moderator key:</label> <input id="modkey" type="password"></div>';
+var nextRoundText = "Please read and consider these thoughts from your peers, then enter your thoughts below. If you like, feel free to load more of your peers' posts. Click &#x1F44D; for any contribution you find helpful or relevant &mdash; even if it\'s incomplete. Try to make each of your posts self-contained, since other readers may not have seen the same set of previous posts that you have. For this purpose, it may help to click <i>show raw</i>, to make it easier to preserve formatting if you copy and remix from earlier posts.<p>"
 
 var handle = "Anonymous Wombat";
 var instance = null;
@@ -163,13 +163,22 @@ function safeRender(str, useMark) {
   if (!useMark) {
     str = str.replace(/\n\n+/g, ' <br><br> ');
   }
-  return '<div>' + str + '</div>';
+  return str;
 }
 
+// No rendering, just escape everything so that the string appears literally
+function asText(str) {
+  let d = document.createElement('div');
+  d.innerText = str;
+  return d.innerHTML;
+}
+
+// wrap setTimeout in a promise
 function wait(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
+// put up a diagnostic message
 function message(text) {
   var msgs = document.getElementsByClassName("messages")[0];
   var msg = document.createElement('div');
@@ -182,6 +191,7 @@ function message(text) {
   .then(() => msg.parentNode.removeChild(msg));
 }
 
+// POST to the server that we like a given post
 function like(x) {
   var fetchData = { 
     method: "POST", 
@@ -194,6 +204,8 @@ function like(x) {
   });
 }
 
+// Make a post by sending a POST request.
+// Optionally mark the post as Markdown-formatted or as a topic tag.
 function sendPost(text, useMark, tag) {
   var doc = {
     text: text,
@@ -216,13 +228,33 @@ function sendPost(text, useMark, tag) {
 }
 
 function responseBox(res, likebut) {
-  var id = Number(res.id);
-  var posttime = moment(res.created).fromNow();
-  var likestr = '';
+  let out = '<div class="cooked">' + safeRender(res.text, res.md) + '</div>';
   if (likebut) {
-    likestr = '\n<div class="postbot"><span class="posttime" data-created="' + res.created + '">' + posttime + '</span><span class="like" id=' + id + '>&#x1F44D;</span></div>';
+    let posttime = moment(res.created).fromNow();
+    let likestr = '\n<div class="postbot"><span class="posttime" data-created="' + res.created + '">' + posttime + '</span>';
+    likestr = likestr + '<span class="showraw"><label><input type="checkbox"> show raw</label></span>';
+    likestr = likestr + '<span class="like" id="' + res.id + '">&#x1F44D;</span></div>';
+    out = out + '<div class="raw">' + asText(res.text) + '</div>';
+    out = out + likestr;
   }
-  return "<div class='response'>" + safeRender(res.text, res.md) + likestr + '</div>';
+  let d = document.createElement('div');
+  d.classList.add("response");
+  d.innerHTML = out;
+  let raw = d.getElementsByClassName('raw')[0];
+  let cooked = d.getElementsByClassName('cooked')[0];
+  let lik = d.getElementsByClassName("like")[0];
+  lik.addEventListener("click", () => like(lik));
+  let rc = d.getElementsByTagName("input")[0];
+  rc.addEventListener("change", () => {
+    if (rc.checked) {
+      raw.style.display = "inline";
+      cooked.style.display = "none";
+    } else {
+      cooked.style.display = "inline";
+      raw.style.display = "none";
+    }
+  })
+  return d;
 }
 
 function shuffle() {
@@ -238,7 +270,7 @@ function shuffle() {
 }
 
 function responses() {
-  const emptypost = { id: 0, text: '**_&mdash;[No posts available]&mdash;_**', md: true };
+  const emptypost = { id: 0, text: '_No posts available, please load more in a bit..._', md: true };
   return shuffle()
   .then((res) => {
     if (res.length > 0) {
@@ -247,7 +279,15 @@ function responses() {
       return [responseBox(emptypost, false)];
     }
   })
-  .then((res) => '<div class="responselist">' + res.reduce((accum, val) => accum + val.toString(), '') + '</div>')
+  // .then((res) => '<div class="responselist">' + res.reduce((accum, val) => accum + val.toString(), '') + '</div>')
+  .then((res) => {
+    let d = document.createElement('div');
+    d.classList.add('responselist');
+    for (let x of res) {
+      d.appendChild(x);
+    }
+    return d;
+  })
   .catch((err) => {
     message("Problem loading new posts; please check to make sure the discussion URL is valid.");
     console.error(err);
@@ -296,15 +336,10 @@ function loadMore() {
   var ins = document.getElementById("insertion");
 
   // insert posts from other users
-  var r = document.createElement("div");
-  ins.parentNode.insertBefore(r, ins);
   responses()
-  .then((res) => {
-    r.innerHTML = res || "";
-    for (let x of r.getElementsByClassName("like")) {
-      x.addEventListener("click", () => like(x));
-    }
-    let posttimes = r.getElementsByClassName("posttime");
+  .then((resp) => {
+    ins.parentNode.insertBefore(resp, ins);
+    let posttimes = resp.getElementsByClassName("posttime");
     repeater(5000, () => {
       for (let x of posttimes) {
         x.innerHTML = moment(Number(x.dataset.created)).fromNow();
