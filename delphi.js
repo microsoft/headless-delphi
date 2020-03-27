@@ -233,7 +233,7 @@ function sendPost(text, useMark, tag) {
 // construct the HTML for a box that shows someone's post (along with stuff like date, a like button, etc.)
 function responseBox(res, likebut) {
   let out = '<div class="cooked">' + safeRender(res.text, res.md) + '</div>';
-  out = out + '<div class="raw">' + asText(res.text) + '</div>';
+  out = out + '<pre class="raw">' + asText(res.text) + '</pre>';
   let posttime = moment(res.created).fromNow();
   out = out + '<div class="postbot"><span class="posttime" data-created="' + res.created + '">' + posttime + '</span>';
   out = out + '<span class="showraw"><label><input type="checkbox"> show raw</label></span>';

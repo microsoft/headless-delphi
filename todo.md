@@ -54,9 +54,7 @@
         - add a way to edit posts? or maybe keep all versions and just mark that new post is an edit?
         - float the post box and controls at the bottom always? Maybe with a minimize button?
         - make the instructions not take up so much space all the time?
-        - fix tab-to-space and other whitespace conversion for show raw?
         - have a way to pop up a markdown cheat sheet
-        - add style sheet features for tables, block quotes, code blocks
 
     - Questions
         - let moderator see poster handles?
@@ -64,6 +62,7 @@
 
     - Not yet
         - is there a way to enter tabs into the text box?
+        - improve style sheet for tables, block quotes, code blocks
         - add a way to easily link to past posts
         - for post, load, tag: change button appearance while waiting for response; prevent repeated clicks
         - add version ID
@@ -72,5 +71,5 @@
         - don't insert <CR> when we press ctrl-<CR> in the post box
 
     - Done
-        - added an example post showing Markdown and KaTeX features
-        - fixed invalid date in the "no posts available" message
+        - changed "raw" block to <pre> to preserve whitespace
+        - added minimal CSS for tables

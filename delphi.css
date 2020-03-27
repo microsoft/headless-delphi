@@ -182,6 +182,14 @@ label {
   margin-top: 0.5em;
   margin-bottom: 0.75em;
 }
+.response table, .mypost table {
+  border-collapse: collapse;
+  margin: 0 1em;
+}
+.response td, .mypost td, .response th, .mypost th {
+  border: 1px solid black;
+  padding: .25em;
+}
 .moderator {
   font-size: xx-small;
   background-color: darkgreen;
