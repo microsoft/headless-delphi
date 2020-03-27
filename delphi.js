@@ -294,7 +294,11 @@ function shuffle() {
 
 // construct a row of the feed
 function responses() {
-  const emptypost = { id: 0, text: '_No posts available, please load more in a bit..._', md: true };
+  const emptypost = { 
+    text: '_No posts available, please load more in a bit..._', 
+    md: true, 
+    created: Date.now() 
+  };
   return shuffle()
   .then((res) => {
     if (res.length > 0) {
@@ -340,8 +344,7 @@ function successfulPost (postText, useMark, tag) {
   var doc = {
     text: postText,
     md: useMark,
-    created: Date.now(),
-    id: randStr(10)
+    created: Date.now()
   };
   var r = responseBox(doc, false);
   r.classList.add('mypost');
