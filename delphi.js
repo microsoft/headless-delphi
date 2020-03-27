@@ -232,14 +232,16 @@ function sendPost(text, useMark, tag) {
 // construct the HTML for a box that shows someone's post (along with stuff like date, a like button, etc.)
 function responseBox(res, likebut) {
   let out = '<div class="cooked">' + safeRender(res.text, res.md) + '</div>';
+  out = out + '<div class="raw">' + asText(res.text) + '</div>';
+  let posttime = moment(res.created).fromNow();
+  out = out + '<div class="postbot"><span class="posttime" data-created="' + res.created + '">' + posttime + '</span>';
+  out = out + '<span class="showraw"><label><input type="checkbox"> show raw</label></span>';
   if (likebut) {
-    let posttime = moment(res.created).fromNow();
-    let likestr = '\n<div class="postbot"><span class="posttime" data-created="' + res.created + '">' + posttime + '</span>';
-    likestr = likestr + '<span class="showraw"><label><input type="checkbox"> show raw</label></span>';
-    likestr = likestr + '<span class="like" id="' + res.id + '">&#x1F44D;</span></div>';
-    out = out + '<div class="raw">' + asText(res.text) + '</div>';
-    out = out + likestr;
+    out = out + '<span class="like" id="' + res.id + '">&#x1F44D;</span>';
+  } else {
+    out = out + '<span class="like">&nbsp;</span>';
   }
+  out = out + '</div><div class="check">&#x2713;</div>';
   let d = document.createElement('div');
   d.classList.add("response");
   d.innerHTML = out;
@@ -308,18 +310,30 @@ function successfulPost (postText, useMark, tag) {
     postText = "[empty post]";
   }
 
-  // different element class depending on whether it's a tag
-  var divHtml = "<div class='mypost'>";
-  if (tag) {
-    divHtml = "<div class='mypost tagpost'>"
-  }
+  // // different element class depending on whether it's a tag
+  // var divHtml = "<div class='mypost'>";
+  // if (tag) {
+  //   divHtml = "<div class='mypost tagpost'>"
+  // }
+  // var r = document.createElement("div");
+  // r.innerHTML = divHtml + safeRender(postText, useMark) + "</div>";
 
   // get insertion point
   var ins = document.getElementById("insertion");
 
   // move the user's post up to the history
-  var r = document.createElement("div");
-  r.innerHTML = divHtml + safeRender(postText, useMark) + "</div>";
+  var doc = {
+    text: postText,
+    md: useMark,
+    created: Date.now(),
+    id: randStr(10)
+  };
+  var r = responseBox(doc, false);
+  r.classList.add('mypost');
+  r.classList.remove('response'); // FIXME: should we just not add 'response', and depend on responses() to do that?
+  if (tag) {
+    r.classList.add('tagpost');
+  }
   ins.parentNode.insertBefore(r, ins);
 
   // update instructions and enable load button

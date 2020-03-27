@@ -29,6 +29,7 @@ body {
 .responselist {
   margin-top: 2ex;
   display: flex;
+  flex-wrap: wrap;
 }
 .response {
   padding: 0.5em 1em;
@@ -42,20 +43,47 @@ body {
   flex-direction: column;
   justify-content: space-between;
   overflow: auto;
+  position: relative;
 }
 .mypost {
   border: 1px solid black;
   border-radius: 2px;
-  background-color: #ddddff;
+  background-color: #ddddf0;
   margin-top: 2ex;
   padding: 0.5em 1em;
   margin-right: 2ex;
   overflow: auto;
+  position: relative;
 }
 .tagpost {
   background-color: #bb88dd
 }
 .postbot {
+  margin-top: 0.66em;
+  font-size: x-small;
+  position: relative;
+  text-align: center;
+}
+.posttime {
+  font-weight: bold;
+  font-style: italic;
+  position: absolute;
+  left: 0;
+  bottom: 0.2em;
+}
+.like {
+  position: absolute;
+  right: 0;
+  bottom: 0.2em;
+}
+.like:active {
+  right: -2px;
+}
+.showraw {
+  font-size: xx-small;
+  font-style: italic;
+}
+/* .postbot {
   margin-top: 0.66em;
   font-size: x-small;
   display: flex;
@@ -65,14 +93,24 @@ body {
 .posttime {
   font-weight: bold;
   font-style: italic;
+  flex-basis: 0.4;
 }
 .like {
   margin-left: 1em;
+  text-align: right;
+  flex-basis: 0.3;
 }
 .like:active {
   position: relative;
   left: 2px;
 }
+.showraw {
+  font-size: xx-small;
+  font-style: italic;
+  position: relative;
+  top: 0.2em;
+  flex-basis: 0.4
+} */
 .messages {
   position: fixed;
   top: 2ex;
@@ -187,12 +225,6 @@ label {
 .modkey {
   display: none;
 }
-.showraw {
-  font-size: xx-small;
-  font-style: italic;
-  position: relative;
-  top: 0.2em;
-}
 .raw {
   color: #333333;
   background-color: #bebe7e;
@@ -205,6 +237,8 @@ label {
   top: 1em;
   right: 1em;
   width: 20%;
+  max-height: 40%;
+  min-height: 3em;
   border: 1px solid black;
   border-radius: 5px;
   padding: 0.3em;
@@ -214,4 +248,23 @@ label {
   color: #444444;
   font-style: italic;
   font-weight: bold;
+}
+.check {
+  font-size: x-large;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  text-align: center;
+  max-width: 0.9em;
+  max-height: 1.15em;
+  min-height: 1.15em;
+  padding: 0.25em;
+  border: 1px solid black;
+  border-radius: 5px;
+  color: darkolivegreen;
+  background-color: rgba(211, 211, 211, 0.9);
+  display: none;
 }

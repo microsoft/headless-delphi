@@ -3,6 +3,8 @@
     - In progress
 
     - Questions
+        - how to scale down, so that we support small groups as well?
+        - can we cluster posts, and display only a representative of each group? Or some other summary?
         - can we allow sketching equations or diagrams with a stylus or finger?
         - admin console with authentication? create new discussions, enable moderators
         - do we need to be able to send notifications to clients?
@@ -34,19 +36,18 @@
         - restart server on errors
         - make sure to close db on exit
         - allow unliking (canceling a like)
-        - show how many likes each post has? (only for moderators)
+        - show how many likes each post has? (only for moderators? only for some other group?)
         - show posters when their posts are liked?
         - log IP or other identifying info for posters?
         - provide a robots.txt?
 
     - Done
-        - fix randomness problem
-        - associate each discussion with an identifying color
 
 - Client
     - In progress
 
     - Questions
+        - let moderator see poster handles?
         - good way to show post previews for markdown?
 
     - Not yet
@@ -58,5 +59,4 @@
         - don't insert <CR> when we press ctrl-<CR> in the post box
 
     - Done
-        - floating indicator of which discussion we're looking at
-        - fix "show raw" appearing in front of messages
+        - use same code path for posts and responses; add post-bottom content to user's own posts
