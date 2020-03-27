@@ -23,9 +23,12 @@
 - Server
 
     - In progress
+        - add a POST for user to endorse a post
+        - remove duplicates before shuffling
 
     - Questions
         - keep a DB of allowed discussionIds with their titles and modtokens?
+        - ability to show a prompt to everyone, e.g., in the discussion title box
 
     - Not yet
         - add current software version ID to responses
@@ -45,6 +48,7 @@
 
 - Client
     - In progress
+        - better interface than double clicking to endorse?
 
     - Questions
         - let moderator see poster handles?
@@ -59,4 +63,5 @@
         - don't insert <CR> when we press ctrl-<CR> in the post box
 
     - Done
-        - use same code path for posts and responses; add post-bottom content to user's own posts
+        - added ability to add/remove a big check mark for endorsing an answer
+        - enable show raw on own posts

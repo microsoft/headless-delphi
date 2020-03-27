@@ -23,9 +23,6 @@ body {
   position: relative;
   left: 2px;
 }
-/* .responses {
-  margin-top: 2ex;
-} */
 .responselist {
   margin-top: 2ex;
   display: flex;
@@ -83,34 +80,6 @@ body {
   font-size: xx-small;
   font-style: italic;
 }
-/* .postbot {
-  margin-top: 0.66em;
-  font-size: x-small;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-}
-.posttime {
-  font-weight: bold;
-  font-style: italic;
-  flex-basis: 0.4;
-}
-.like {
-  margin-left: 1em;
-  text-align: right;
-  flex-basis: 0.3;
-}
-.like:active {
-  position: relative;
-  left: 2px;
-}
-.showraw {
-  font-size: xx-small;
-  font-style: italic;
-  position: relative;
-  top: 0.2em;
-  flex-basis: 0.4
-} */
 .messages {
   position: fixed;
   top: 2ex;
@@ -267,4 +236,7 @@ label {
   color: darkolivegreen;
   background-color: rgba(211, 211, 211, 0.9);
   display: none;
+}
+.check.endorsed {
+  display: inline;
 }

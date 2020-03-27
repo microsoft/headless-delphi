@@ -15,6 +15,7 @@ var handle = "Anonymous Wombat";
 var instance = null;
 var discussion = null;
 var moderatorToken = null;
+var allChecks = [];
 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -246,21 +247,35 @@ function responseBox(res, likebut) {
   d.classList.add("response");
   d.innerHTML = out;
   if (likebut) {
-    let raw = d.getElementsByClassName('raw')[0];
-    let cooked = d.getElementsByClassName('cooked')[0];
     let lik = d.getElementsByClassName("like")[0];
     lik.addEventListener("click", () => like(lik));
-    let rc = d.getElementsByTagName("input")[0];
-    rc.addEventListener("change", () => {
-      if (rc.checked) {
-        raw.style.display = "inline";
-        cooked.style.display = "none";
-      } else {
-        cooked.style.display = "inline";
-        raw.style.display = "none";
-      }
-    })
   }
+  let raw = d.getElementsByClassName('raw')[0];
+  let cooked = d.getElementsByClassName('cooked')[0];
+  let rc = d.getElementsByTagName("input")[0];
+  rc.addEventListener("change", () => {
+    if (rc.checked) {
+      raw.style.display = "inline";
+      cooked.style.display = "none";
+    } else {
+      cooked.style.display = "inline";
+      raw.style.display = "none";
+    }
+  });
+  let chk = d.getElementsByClassName("check")[0];
+  allChecks.push(chk);
+  d.addEventListener('dblclick', (evt) => {
+    if (chk.classList.contains('endorsed')) {
+      chk.classList.remove('endorsed');
+    } else {
+      for (let c of allChecks) {
+        c.classList.remove('endorsed');
+      }
+      chk.classList.add('endorsed');
+    }
+    // evt.preventDefault();
+    // evt.stopImmediatePropagation();
+  });
   return d;
 }
 
