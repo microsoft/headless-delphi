@@ -81,7 +81,7 @@ ___
 
 # Markdown sample
 ## (Use "show raw" to see how it works.)
-### There are 6 levels of heading but you get the idea...
+### There are 6 levels of heading, but you get the idea...
 
 Lorem ipsum dolor sit amet
 
@@ -179,6 +179,6 @@ You can also specify the image link later in the document:
 [galena]: https://upload.wikimedia.org/wikipedia/commons/9/92/Calcite-Galena-elm56c.jpg
 ```
 
-#### Thanks to markdown-it
+#### Thanks to markdown-it and KaTeX
 
 This demo post is adapted from the [Markdown-it demo](https://markdown-it.github.io) to remove features that aren't enabled here.

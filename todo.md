@@ -49,12 +49,15 @@
 
 - Client
     - In progress
+        - collapse and max height for posts
+        - float the post box and controls at the bottom always? Maybe with a minimize button?
+        - three columns: my posts, others' posts, promoted posts
         - better interface than double clicking to endorse?
         - add a way to show a (floating?) prompt selected by the moderator
         - add a way to edit posts? or maybe keep all versions and just mark that new post is an edit?
-        - float the post box and controls at the bottom always? Maybe with a minimize button?
         - make the instructions not take up so much space all the time?
         - have a way to pop up a markdown cheat sheet
+        - add a way to undo a tag post (or select a previous discussion to go back to)
 
     - Questions
         - let moderator see poster handles?
@@ -71,5 +74,3 @@
         - don't insert <CR> when we press ctrl-<CR> in the post box
 
     - Done
-        - changed "raw" block to <pre> to preserve whitespace
-        - added minimal CSS for tables
