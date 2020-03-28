@@ -74,6 +74,4 @@
         - don't insert <CR> when we press ctrl-<CR> in the post box
 
     - Done
-        - float the post box and controls at the bottom always
-        - max height for posts
-        - minify the post box and controls if we click outside of it
+        - fixed overflow and scrolling for posts when changing cooked/raw

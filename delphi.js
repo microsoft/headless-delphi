@@ -251,7 +251,8 @@ function responseBox(res, likebut) {
   } else {
     out = out + '<span class="like">&nbsp;</span>';
   }
-  out = out + '</div><div class="check">&#x2713;</div>';
+  out = out + '</div>';
+  // out = out + '<div class="check">&#x2713;</div>';
   let d = document.createElement('div');
   d.classList.add("response");
   d.innerHTML = out;
@@ -271,8 +272,8 @@ function responseBox(res, likebut) {
       raw.style.display = "none";
     }
   });
-  let chk = d.getElementsByClassName("check")[0];
-  allChecks.push(chk);
+  // let chk = d.getElementsByClassName("check")[0];
+  // allChecks.push(chk);
   // d.addEventListener('dblclick', (evt) => {
   //   if (chk.classList.contains('endorsed')) {
   //     chk.classList.remove('endorsed');
@@ -338,14 +339,6 @@ function successfulPost (postText, useMark, tag) {
     postText = "[empty post]";
   }
 
-  // // different element class depending on whether it's a tag
-  // var divHtml = "<div class='mypost'>";
-  // if (tag) {
-  //   divHtml = "<div class='mypost tagpost'>"
-  // }
-  // var r = document.createElement("div");
-  // r.innerHTML = divHtml + safeRender(postText, useMark) + "</div>";
-
   // get insertion point
   var ins = document.getElementById("insertion");
 
@@ -357,7 +350,7 @@ function successfulPost (postText, useMark, tag) {
   };
   var r = responseBox(doc, false);
   r.classList.add('mypost');
-  r.classList.remove('response'); // FIXME: should we just not add 'response', and depend on responses() to do that?
+  // r.classList.remove('response'); // FIXME: should we just not add 'response', and depend on responses() to do that?
   if (tag) {
     r.classList.add('tagpost');
   }
