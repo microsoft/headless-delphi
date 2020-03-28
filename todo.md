@@ -50,7 +50,6 @@
 - Client
     - In progress
         - add my own handle to title floater?
-        - three columns: my posts, others' posts, promoted posts
         - better interface than double clicking to endorse?
         - add a way to edit posts? or maybe keep all versions and just mark that new post is an edit?
         - make the instructions not take up so much space all the time? (maybe treat them like a post?)
@@ -74,5 +73,4 @@
         - don't insert <CR> when we press ctrl-<CR> in the post box
 
     - Done
-        - add a way to minimize the post box
-        - make initial (login) div disappear after login
+        - three column layout: feed, work area, scratch area

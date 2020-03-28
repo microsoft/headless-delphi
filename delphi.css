@@ -2,11 +2,42 @@ body {
   font-family: arial, sans-serif;
 }
 .main {
-  margin-top: 3em;
   margin-left: 7ex;
   margin-right: 7ex;
-  margin-bottom: 30em;
-  position: relative;
+  /* position: relative; */
+}
+.columns {
+  display: flex;
+}
+.feed {
+  flex-basis: 33%;
+  min-width: 33%;
+  height: 100vh;
+  overflow: scroll;
+}
+.feedcontent {
+  padding-top: 1em;
+  padding-bottom: 30em;
+}
+.workarea {
+  flex-basis: 33%;
+  min-width: 33%;
+  height: 100vh;
+  overflow: scroll;
+}
+.workcontent {
+  padding-top: 1em;
+  padding-bottom: 30em;
+}
+.scratcharea {
+  flex-basis: 33%;
+  min-width: 33%;
+  height: 100vh;
+  overflow: scroll;
+}
+.scratchcontent {
+  padding-top: 1em;
+  padding-bottom: 30em;
 }
 .round {
   position: fixed;
@@ -31,19 +62,19 @@ body {
   position: relative;
   left: 2px;
 }
-.responselist {
+/* .responselist {
   display: flex;
   flex-wrap: wrap;
-}
+} */
 .response {
-  margin-top: 2ex;
+  margin-bottom: 2ex;
   padding: 0.5em 1em;
   border: 1px solid black;
   border-radius: 2px;
   background-color: #ffffdd;
   margin-right: 2ex;
-  flex-basis: calc(33.33% - 2ex - 2em - 2px);
-  min-width: calc(33.33% - 2ex - 2em - 2px);
+  /* flex-basis: calc(33.33% - 2ex - 2em - 2px);
+  min-width: calc(33.33% - 2ex - 2em - 2px); */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -67,7 +98,7 @@ body {
 }
 .postbot {
   background-color: inherit;
-  font-size: 80%;
+  font-size: 70%;
   text-align: center;
   display: flex;
   justify-content: space-between;
@@ -259,9 +290,9 @@ label {
 .check.endorsed {
   display: inline;
 } */
-/* .initial {
-  margin-bottom: 2ex;
-} */
+.initial {
+  width: 100%;
+}
 #postArea {
   width: calc(100% - 0.5em);
   height: 10em;
@@ -275,6 +306,3 @@ label {
 #floattitle {
   margin-bottom: 0.5em;
 }
-/* #postArea:focus {
-  height: 10em;
-} */
