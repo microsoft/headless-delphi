@@ -52,26 +52,18 @@ body {
   overflow: scroll;
 }
 .mypost {
-  /* border: 1px solid black;
-  border-radius: 2px; */
   background-color: #ddddf0;
-  /* margin-top: 2ex;
-  padding: 0.5em 1em;
-  margin-right: 2ex; */
-  /* overflow: auto; */
-  /* position: relative; */
+}
+.tagpost {
+  background-color: #bb88dd
 }
 .raw {
   color: #707000;  /* 4c5200 */
-  /* border-radius: 2px; */
   min-height: calc(100% - 0.8 * 1.45em);
   display: none;
 }
 .cooked {
   min-height: calc(100% - 0.8 * 1.45em);
-}
-.tagpost {
-  background-color: #bb88dd
 }
 .postbot {
   background-color: inherit;
