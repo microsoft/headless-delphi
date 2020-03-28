@@ -58,6 +58,7 @@
 
     - Questions
         - add a way to show a (floating?) prompt selected by the moderator?
+        - or treat new topics as post and add to feed?
         - add a way for moderator to undo a tag post (or select a previous discussion to go back to)?
         - let moderator see poster handles?
         - good way to show post previews for markdown?
@@ -75,3 +76,4 @@
     - Done
         - float the post box and controls at the bottom always
         - max height for posts
+        - minify the post box and controls if we click outside of it

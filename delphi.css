@@ -17,7 +17,6 @@ body {
   border-radius: 5px;
   background: white;
   padding: 0.25em;
-  /* margin-top: 1em; */
   display: none;
 }
 .but {
@@ -48,7 +47,6 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  /* overflow: auto; */
   position: relative;
 }
 .mypost {
@@ -264,10 +262,13 @@ label {
 }
 #postArea {
   width: calc(100% - 0.5em);
+  height: 10em;
+}
+.round.min #postArea {
   height: 1em;
 }
-#postArea:focus {
-  height: 10em;
+.round.min #controls {
+  display: none;
 }
 
 /* #postArea:focus {

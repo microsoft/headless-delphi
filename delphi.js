@@ -99,18 +99,20 @@ function init () {
     });
   });
   var postArea = document.getElementById("postArea");
-  var controls = document.getElementById("controls");
+  var round = document.getElementsByClassName("round")[0];
   postArea.addEventListener("keyup", (e) => {
     if (e.key == "Enter" && e.ctrlKey) {
       nextRound();
     }
   });
-  // postArea.addEventListener("focus", () => {
-  //   controls.style.display = "inline";
-  // });
-  // postArea.addEventListener("blur", () => {
-  //   wait(500).then(() => controls.style.display = "none");
-  // });
+  postArea.addEventListener("focus", () => {
+    round.classList.remove('min');
+  });
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest('.round')) {
+      round.classList.add('min');
+    }
+  });
   var upmoddiv = document.getElementsByClassName('modkey')[0];
   var upmodbox = document.getElementById('upmod');
   var modkeyinput = document.getElementById('modkey');
@@ -271,18 +273,18 @@ function responseBox(res, likebut) {
   });
   let chk = d.getElementsByClassName("check")[0];
   allChecks.push(chk);
-  d.addEventListener('dblclick', (evt) => {
-    if (chk.classList.contains('endorsed')) {
-      chk.classList.remove('endorsed');
-    } else {
-      for (let c of allChecks) {
-        c.classList.remove('endorsed');
-      }
-      chk.classList.add('endorsed');
-    }
-    // evt.preventDefault();
-    // evt.stopImmediatePropagation();
-  });
+  // d.addEventListener('dblclick', (evt) => {
+  //   if (chk.classList.contains('endorsed')) {
+  //     chk.classList.remove('endorsed');
+  //   } else {
+  //     for (let c of allChecks) {
+  //       c.classList.remove('endorsed');
+  //     }
+  //     chk.classList.add('endorsed');
+  //   }
+  //   // evt.preventDefault();
+  //   // evt.stopImmediatePropagation();
+  // });
   return d;
 }
 
