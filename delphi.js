@@ -4,7 +4,7 @@ var md = require('markdown-it')(),
 md.use(mk);
 var pur = require('dompurify');
 
-var initialText = '<h3><span id="title">loading discussion name...</span></h3>Choose your handle for this discussion: <input id="name" autofocus="true" type="text" placeholder="Required"> <span class="moderator">Moderator</span><br><div><input id="savelogin" type="checkbox" checked> <label for="savelogin">Save my info on this browser?</label>&nbsp;&nbsp; <input id="upmod" type="checkbox"> <label for="upmod">Update my moderator status?</label></div><div class="modkey"><label for="modkey">Moderator key:</label> <input id="modkey" type="password"></div>';
+var initialText = '<h3><span id="title">loading discussion name...</span></h3>Choose your handle for this discussion: <input id="name" autofocus="true" type="text" placeholder="Required"><br><div><input id="savelogin" type="checkbox" checked> <label for="savelogin">Save my info on this browser?</label>&nbsp;&nbsp; <input id="upmod" type="checkbox"> <label for="upmod">Update my moderator status?</label></div><div class="modkey"><label for="modkey">Moderator key:</label> <input id="modkey" type="password"></div>';
 
 var firstRoundText = "Enter your thoughts below. It's fine if you don't address everything; just contribute as much as you can. \
 If you're truly stuck, you can make an empty post, and see some of what your peers are saying.<p>"
@@ -62,7 +62,8 @@ function init () {
   })
   .then((res) => {
     document.getElementById("title").textContent = res.title;
-    document.getElementById("floater").textContent = res.title;
+    document.getElementById("title").style.backgroundColor = res.bgcolor;
+    document.getElementById("floattitle").textContent = res.title;
     document.getElementById("floater").style.backgroundColor = res.bgcolor;
   })
   .catch((err) => {
@@ -407,6 +408,8 @@ function firstRound() {
     namebox.style.backgroundColor = '';
     document.getElementById("postButton").style.display = "inline";
     document.getElementById("startDiscussion").style.display = "none";
+    document.getElementById("floater").style.display = "block";
+    document.getElementsByClassName("initial")[0].style.display = "none";
     var upmodbox = document.getElementById('upmod');
     upmodbox.readonly = true;
     upmodbox.disabled = true;

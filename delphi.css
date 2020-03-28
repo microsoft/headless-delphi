@@ -120,6 +120,8 @@ body {
 }
 #title {
   color: #444444;
+  padding: 0.2em;
+  border-radius: 3px;
 }
 #instructions {
   margin-top: 2ex;
@@ -233,6 +235,7 @@ label {
   color: #444444;
   font-style: italic;
   font-weight: bold;
+  display: none;
 }
 /* .check {
   font-size: x-large;
@@ -269,7 +272,9 @@ label {
 .round.min #controls {
   display: none;
 }
-
+#floattitle {
+  margin-bottom: 0.5em;
+}
 /* #postArea:focus {
   height: 10em;
 } */

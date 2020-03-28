@@ -49,6 +49,7 @@
 
 - Client
     - In progress
+        - add my own handle to title floater?
         - three columns: my posts, others' posts, promoted posts
         - better interface than double clicking to endorse?
         - add a way to edit posts? or maybe keep all versions and just mark that new post is an edit?
@@ -74,3 +75,4 @@
 
     - Done
         - add a way to minimize the post box
+        - make initial (login) div disappear after login
