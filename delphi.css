@@ -44,12 +44,10 @@ body {
   margin-right: 2ex;
   flex-basis: calc(33.33% - 2ex - 2em - 2px);
   min-width: calc(33.33% - 2ex - 2em - 2px);
-  max-height: 15em;
-  /* display: flex;
+  display: flex;
   flex-direction: column;
-  justify-content: space-between; */
+  justify-content: space-between;
   position: relative;
-  overflow: scroll;
 }
 .mypost {
   background-color: #ddddf0;
@@ -58,40 +56,40 @@ body {
   background-color: #bb88dd
 }
 .raw {
-  color: #707000;  /* 4c5200 */
-  min-height: calc(100% - 0.8 * 1.45em);
   display: none;
+  color: #707000;  /* 4c5200 */
+  max-height: 15em;
+  overflow: scroll;
 }
 .cooked {
-  min-height: calc(100% - 0.8 * 1.45em);
+  max-height: 15em;
+  overflow: scroll;
 }
 .postbot {
   background-color: inherit;
   font-size: 80%;
-  height: 1.45em;
   text-align: center;
-  position: sticky;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 0.5ex;
 }
 .posttime {
+  flex-basis: 33%;
   font-weight: bold;
   font-style: italic;
-  position: absolute;
-  left: 0;
-  bottom: 0.2em;
-  z-index: -1;
+  text-align: left;
 }
 .like {
-  position: absolute;
-  right: 0;
-  bottom: 0.2em;
-  /* background-color: inherit; */
+  flex-basis: 33%;
+  text-align: right;
+  background-color: inherit;
 }
 .like:active {
+  flex-basis: 33%;
+  position: relative;
   right: -2px;
-}
+} 
 .showraw {
   font-size: xx-small;
   font-style: italic;

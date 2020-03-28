@@ -242,7 +242,7 @@ function sendPost(text, useMark, tag) {
 // construct the HTML for a box that shows someone's post (along with stuff like date, a like button, etc.)
 function responseBox(res, likebut) {
   let out = '<div class="cooked">' + safeRender(res.text, res.md) + '</div>';
-  out = out + '<pre class="raw">' + asText(res.text) + '</pre>';
+  out = out + '<div class="raw"><pre>' + asText(res.text) + '</pre></div>';
   let posttime = moment(res.created).fromNow();
   out = out + '<div class="postbot">';
   out = out + '<span class="posttime" data-created="' + res.created + '">' + posttime + '</span>';
@@ -266,10 +266,10 @@ function responseBox(res, likebut) {
   let rc = d.getElementsByTagName("input")[0];
   rc.addEventListener("change", () => {
     if (rc.checked) {
-      raw.style.display = "inline";
+      raw.style.display = "block";
       cooked.style.display = "none";
     } else {
-      cooked.style.display = "inline";
+      cooked.style.display = "block";
       raw.style.display = "none";
     }
   });
