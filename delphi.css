@@ -95,7 +95,7 @@ body {
   position: absolute;
   right: 0;
   bottom: 0.2em;
-  background-color: inherit;
+  /* background-color: inherit; */
 }
 .like:active {
   right: -2px;

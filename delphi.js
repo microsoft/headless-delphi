@@ -337,7 +337,11 @@ function successfulPost (postText, useMark, tag) {
 
   // mark empty posts
   if (!postText) {
-    postText = "[empty post]";
+    if (tag) {
+      postText = "[new topic]";
+    } else {
+      postText = "[empty post]";
+    }
   }
 
   // get insertion point
@@ -351,7 +355,6 @@ function successfulPost (postText, useMark, tag) {
   };
   var r = responseBox(doc, false);
   r.classList.add('mypost');
-  // r.classList.remove('response'); // FIXME: should we just not add 'response', and depend on responses() to do that?
   if (tag) {
     r.classList.add('tagpost');
   }

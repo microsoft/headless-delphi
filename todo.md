@@ -49,7 +49,6 @@
 
 - Client
     - In progress
-        - add a way to minimize the post box
         - three columns: my posts, others' posts, promoted posts
         - better interface than double clicking to endorse?
         - add a way to edit posts? or maybe keep all versions and just mark that new post is an edit?
@@ -74,4 +73,4 @@
         - don't insert <CR> when we press ctrl-<CR> in the post box
 
     - Done
-        - make sure postbot sticks to bottom of response box, remains legible
+        - add a way to minimize the post box
