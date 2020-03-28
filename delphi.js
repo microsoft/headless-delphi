@@ -244,7 +244,8 @@ function responseBox(res, likebut) {
   let out = '<div class="cooked">' + safeRender(res.text, res.md) + '</div>';
   out = out + '<pre class="raw">' + asText(res.text) + '</pre>';
   let posttime = moment(res.created).fromNow();
-  out = out + '<div class="postbot"><span class="posttime" data-created="' + res.created + '">' + posttime + '</span>';
+  out = out + '<div class="postbot">';
+  out = out + '<span class="posttime" data-created="' + res.created + '">' + posttime + '</span>';
   out = out + '<span class="showraw"><label><input type="checkbox"> show raw</label></span>';
   if (likebut) {
     out = out + '<span class="like" id="' + res.id + '">&#x1F44D;</span>';

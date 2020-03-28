@@ -61,14 +61,22 @@ body {
   /* overflow: auto; */
   /* position: relative; */
 }
+.raw {
+  color: #707000;  /* 4c5200 */
+  /* border-radius: 2px; */
+  min-height: calc(100% - 0.8 * 1.45em);
+  display: none;
+}
+.cooked {
+  min-height: calc(100% - 0.8 * 1.45em);
+}
 .tagpost {
   background-color: #bb88dd
 }
 .postbot {
-  margin-top: 0.66em;
   background-color: inherit;
-  font-size: x-small;
-  position: relative;
+  font-size: 80%;
+  height: 1.45em;
   text-align: center;
   position: sticky;
   bottom: 0;
@@ -81,11 +89,13 @@ body {
   position: absolute;
   left: 0;
   bottom: 0.2em;
+  z-index: -1;
 }
 .like {
   position: absolute;
   right: 0;
   bottom: 0.2em;
+  background-color: inherit;
 }
 .like:active {
   right: -2px;
@@ -93,6 +103,7 @@ body {
 .showraw {
   font-size: xx-small;
   font-style: italic;
+  background-color: inherit;
 }
 .messages {
   position: fixed;
@@ -216,15 +227,6 @@ label {
 .modkey {
   display: none;
 }
-.raw {
-  color: #707000;  /* 4c5200 */
-  border-radius: 2px;
-  display: none;
-}
-/* .cooked {
-  max-height: 15em;
-  overflow: auto;
-} */
 #floater {
   position: fixed;
   top: 1em;

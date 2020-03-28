@@ -74,4 +74,4 @@
         - don't insert <CR> when we press ctrl-<CR> in the post box
 
     - Done
-        - fixed overflow and scrolling for posts when changing cooked/raw
+        - make sure postbot sticks to bottom of response box, remains legible
