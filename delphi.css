@@ -5,10 +5,19 @@ body {
   margin-top: 3em;
   margin-left: 7ex;
   margin-right: 7ex;
-  margin-bottom: 25em;
+  margin-bottom: 30em;
+  position: relative;
 }
 .round {
-  margin-top: 1em;
+  position: fixed;
+  width: 60%;
+  min-width: 25em;
+  bottom: 0.5em;
+  border: 1px solid black;
+  border-radius: 5px;
+  background: white;
+  padding: 0.25em;
+  /* margin-top: 1em; */
   display: none;
 }
 .but {
@@ -39,7 +48,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  overflow: auto;
+  /* overflow: auto; */
   position: relative;
 }
 .mypost {
@@ -203,11 +212,16 @@ label {
   display: none;
 }
 .raw {
+  max-height: 15em;
   color: #333333;
   background-color: #bebe7e;
   border-radius: 2px;
   overflow: auto;
   display: none;
+}
+.cooked {
+  max-height: 15em;
+  overflow: auto;
 }
 #floater {
   position: fixed;
@@ -248,3 +262,14 @@ label {
 .check.endorsed {
   display: inline;
 }
+#postArea {
+  width: calc(100% - 0.5em);
+  height: 1em;
+}
+#postArea:focus {
+  height: 10em;
+}
+
+/* #postArea:focus {
+  height: 10em;
+} */

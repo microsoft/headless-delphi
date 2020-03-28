@@ -99,11 +99,18 @@ function init () {
     });
   });
   var postArea = document.getElementById("postArea");
+  var controls = document.getElementById("controls");
   postArea.addEventListener("keyup", (e) => {
     if (e.key == "Enter" && e.ctrlKey) {
       nextRound();
     }
   });
+  // postArea.addEventListener("focus", () => {
+  //   controls.style.display = "inline";
+  // });
+  // postArea.addEventListener("blur", () => {
+  //   wait(500).then(() => controls.style.display = "none");
+  // });
   var upmoddiv = document.getElementsByClassName('modkey')[0];
   var upmodbox = document.getElementById('upmod');
   var modkeyinput = document.getElementById('modkey');
