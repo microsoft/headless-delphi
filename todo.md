@@ -23,9 +23,11 @@
 - Server
 
     - In progress
-        - add a POST for user to endorse a post
+        - POST LIKE should add/remove like
+        - add a POST for user to endorse/unendorse a post
         - remove duplicates before shuffling
         - for each user@instance, remove all but latest post before shuffling
+        - add a GET for top posts
 
     - Questions
         - keep a DB of allowed discussionIds with their titles and modtokens?
@@ -39,7 +41,6 @@
         - figure out how to exclude .npmignore'd files on deploy
         - restart server on errors
         - make sure to close db on exit
-        - allow unliking (canceling a like)
         - show how many likes each post has? (only for moderators? only for some other group?)
         - show posters when their posts are liked?
         - log IP or other identifying info for posters?
@@ -49,12 +50,17 @@
 
 - Client
     - In progress
-        - be able to undo a vote
-        - have a way to pop up a markdown cheat sheet
-        - better interface than double clicking to endorse?
+        - make it easier to scroll the feed
         - add a way to edit posts? or maybe keep all versions and just mark that new post is an edit?
+        - button to show/reload top posts
+        - allow bringing up a pop-over to read a long post or preview own post
+        - have a way to pop up a markdown cheat sheet
+        - badge posts with their #likes, #votes
+        - rewrite instructions
 
     - Questions
+        - button to show/reload posts that are similar to a given one?
+        - stream likes and votes?
         - add user's entered handle to the title floater box?
         - add a way to show a (floating?) prompt selected by the moderator?
         - or treat new topics as post and add to feed?
@@ -73,7 +79,5 @@
         - don't insert <CR> when we press ctrl-<CR> in the post box
 
     - Done
-        - function to insert an element in a column
-        - move the "load more" button to bottom of feed
-        - treat instructions like a post
-        - added a vote button
+        - allow unliking and unvoting (canceling a like or vote)
+        - added shading on overflow

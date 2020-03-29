@@ -17,7 +17,7 @@ body {
 }
 .feedcontent {
   padding-top: 1em;
-  padding-bottom: 30em;
+  padding-bottom: min(30em, 75vh);
 }
 .workarea {
   flex-basis: 33%;
@@ -28,7 +28,7 @@ body {
 }
 .workcontent {
   padding-top: 1em;
-  padding-bottom: 30em;
+  padding-bottom: min(30em, 75vh);
 }
 #workprompt {
   font-style: italic;
@@ -47,7 +47,7 @@ body {
 }
 .scratchcontent {
   padding-top: 1em;
-  padding-bottom: 30em;
+  padding-bottom: min(30em, 75vh);
 }
 .round {
   position: fixed;
@@ -68,6 +68,7 @@ body {
   font-size: small;
   user-select: none;
   -webkit-user-select: none;
+  cursor: pointer;
 }
 .but:active {
   background-color: white;
@@ -90,7 +91,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  position: relative;
+  /* position: relative; */
 }
 .mypost {
   background-color: #ddddf0;
@@ -106,11 +107,34 @@ body {
   display: none;
   color: #707000;  /* 4c5200 */
   max-height: 15em;
-  overflow: scroll;
+  overflow: hidden;
+  position: relative;
 }
 .cooked {
   max-height: 15em;
-  overflow: scroll;
+  overflow: hidden;
+  position: relative;
+}
+.vspace {
+  width: 1px;
+  height: 1.75em;
+}
+.overflow {
+  background-image: linear-gradient(#ffffdd00,#ffffddbb,#ffffddff);
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1.75em;
+}
+.mypost .overflow {
+  background-image: linear-gradient(#ddddf000,#ddddf0bb,#ddddf0ff);
+}
+.tagpost .overflow {
+  background-image: linear-gradient(#bb88dd00,#bb88ddbb,#bb88ddff);
+}
+.instructions .overflow {
+  background-image: linear-gradient(#ffffff00,#ffffffbb,#ffffffff);
 }
 .postbot {
   background-color: inherit;
@@ -119,7 +143,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-top: 0.5ex;
+  /* margin-top: 0.5ex; */
 }
 .posttime {
   flex-basis: 33%;
@@ -137,10 +161,12 @@ body {
   font-weight: bold;
   font-style: italic;
   padding: .1em;
+  border-radius: 2px;
   font-size: 80%;
   color: #444444;
   user-select: none;
   -webkit-user-select: none;
+  cursor: pointer;
 }
 .vote:active {
   position: relative;
@@ -149,14 +175,20 @@ body {
 .like {
   text-align: right;
   margin-left: 0.33em;
+  padding-bottom: 1px;
+  border-radius: 2px;
   user-select: none;
   -webkit-user-select: none;
-  /* background-color: inherit; */
+  cursor: pointer;
 }
 .like:active {
   position: relative;
   right: -2px;
-} 
+}
+.liked, .voted {
+  background-color: #cfaa44;
+  /* background-color: #c09f33; */
+}
 .showraw {
   flex-basis: 33%;
   flex-grow: 1;
@@ -336,6 +368,8 @@ label {
 #postArea {
   width: calc(100% - 0.5em);
   height: 10em;
+  max-height: 15vh;
+  resize: none;
 }
 .round.min #postArea {
   height: 1em;

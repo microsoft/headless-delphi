@@ -204,14 +204,24 @@ function message(text) {
   .then(() => msg.parentNode.removeChild(msg));
 }
 
-// POST to the server that we like a given post
+// handle a click on the like button: toggle liked-ness, and
+// POST to the server whether we like the post
 function like(x) {
+  let liked = x.classList.contains('liked');
   var fetchData = { 
     method: "POST", 
     headers: { "Content-Type": "application/json"},
+    liked: liked,
     body: JSON.stringify({ handle: handle, instance: instance })
   };
   fetch("like/" + x.id + "?d=" + discussion, fetchData)
+  .then(() => {
+    if (liked) {
+      x.classList.remove('liked');
+    } else {
+      x.classList.add('liked');
+    }
+  })
   .catch((err) => {
     console.error(err);
   });
@@ -219,7 +229,14 @@ function like(x) {
 
 // Vote for a given post
 function vote(x, d) {
-  insertEl(d, 'workinsertion');
+  let voted = x.classList.contains('voted');
+  if (voted) {
+    x.classList.remove('voted');
+    insertEl(d, 'insertion');
+  } else {
+    x.classList.add('voted');
+    insertEl(d, 'workinsertion');
+  }
 }
 
 // Make a post by sending a POST request.
@@ -248,8 +265,8 @@ function sendPost(text, useMark, tag) {
 // construct the HTML for a box that shows someone's post (along with stuff like date, a like button, etc.)
 function responseBox(res, include) {
   include = include || {};
-  let out = '<div class="cooked">' + safeRender(res.text, res.md) + '</div>';
-  out = out + '<div class="raw"><pre>' + asText(res.text) + '</pre></div>';
+  let out = '<div class="cooked">' + safeRender(res.text, res.md) + '<div class="vspace"></div><div class="overflow"></div></div>';
+  out = out + '<div class="raw"><pre>' + asText(res.text) + '</pre><div class="vspace"></div><div class="overflow"></div></div>';
   let posttime = moment(res.created).fromNow();
   out = out + '<div class="postbot">';
   out = out + '<span class="posttime" data-created="' + res.created + '">' + posttime + '</span>';
@@ -265,6 +282,7 @@ function responseBox(res, include) {
   }
   out = out + '</span>';
   out = out + '</div>';
+  // out = out + '<div class="overflow"></div>';
   // out = out + '<div class="check">&#x2713;</div>';
   let d = document.createElement('div');
   d.classList.add("response");

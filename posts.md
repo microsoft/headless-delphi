@@ -92,7 +92,9 @@ Lorem ipsum dolor sit amet
 ## Math
 
 A big subset of LaTeX works inside `$...$` or `$$...$$` via
-[KaTeX](https://katex.org/docs/supported.html), both as inline $\int_0^1 x \left[ \cos^2(x) + \sin^2(x) \right]dx = {1\over 2}$ and display:
+[KaTeX](https://katex.org/docs/supported.html), both as 
+inline $\int_0^1 x \left[ \cos^2(x) + \sin^2(x) \right]dx = {1\over 2}$ 
+and display:
 $$\lim_{x\downarrow 0}\, x\ln x = 0$$
 
 ## Emphasis
@@ -102,8 +104,9 @@ $$\lim_{x\downarrow 0}\, x\ln x = 0$$
 ## Blockquotes
 
 > Blockquotes can be nested...
->> ...by using additional greater-than signs right next to each other...
-> > > ...or with spaces between arrows.
+>> ...by using additional greater-than 
+>> signs right next to each other...
+> > > ...or with spaces between.
 
 ## Lists
 
@@ -181,4 +184,6 @@ You can also specify the image link later in the document:
 
 #### Thanks to markdown-it and KaTeX
 
-This demo post is adapted from the [Markdown-it demo](https://markdown-it.github.io) to remove features that aren't enabled here.
+This demo post is adapted from the 
+[Markdown-it demo](https://markdown-it.github.io) 
+to remove features that aren't enabled here.
