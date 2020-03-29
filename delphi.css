@@ -24,10 +24,20 @@ body {
   min-width: 33%;
   height: 100vh;
   overflow: scroll;
+  position: relative;
 }
 .workcontent {
   padding-top: 1em;
   padding-bottom: 30em;
+}
+#workprompt {
+  font-style: italic;
+  font-size: 80%;
+  color: #444444;
+  display: none;
+  position: absolute;
+  top: 2em;
+  z-index: -1;
 }
 .scratcharea {
   flex-basis: 33%;
@@ -56,6 +66,8 @@ body {
   border: 1px solid black;
   border-radius: 3px;
   font-size: small;
+  user-select: none;
+  -webkit-user-select: none;
 }
 .but:active {
   background-color: white;
@@ -67,12 +79,12 @@ body {
   flex-wrap: wrap;
 } */
 .response {
-  margin-bottom: 2ex;
-  padding: 0.5em 1em;
+  margin-bottom: 1.2rem;
+  padding: 0.5rem 1rem;
   border: 1px solid black;
   border-radius: 2px;
   background-color: #ffffdd;
-  margin-right: 2ex;
+  margin-right: 1.2rem;
   /* flex-basis: calc(33.33% - 2ex - 2em - 2px);
   min-width: calc(33.33% - 2ex - 2em - 2px); */
   display: flex;
@@ -85,6 +97,10 @@ body {
 }
 .tagpost {
   background-color: #bb88dd
+}
+.instructions {
+  background-color: white;
+  font-size: 80%;
 }
 .raw {
   display: none;
@@ -107,21 +123,43 @@ body {
 }
 .posttime {
   flex-basis: 33%;
+  flex-grow: 1;
   font-weight: bold;
   font-style: italic;
   text-align: left;
 }
-.like {
+.postbotbuts {
   flex-basis: 33%;
+  flex-grow: 1;
   text-align: right;
-  background-color: inherit;
+}
+.vote {
+  font-weight: bold;
+  font-style: italic;
+  padding: .1em;
+  font-size: 80%;
+  color: #444444;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.vote:active {
+  position: relative;
+  right: -2px;
+}
+.like {
+  text-align: right;
+  margin-left: 0.33em;
+  user-select: none;
+  -webkit-user-select: none;
+  /* background-color: inherit; */
 }
 .like:active {
-  flex-basis: 33%;
   position: relative;
   right: -2px;
 } 
 .showraw {
+  flex-basis: 33%;
+  flex-grow: 1;
   font-size: xx-small;
   font-style: italic;
   background-color: inherit;
@@ -246,6 +284,8 @@ label {
   border-radius: 3px;
   padding: 2px;
   display: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 .modkey {
   display: none;

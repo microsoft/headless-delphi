@@ -20,11 +20,11 @@
       <div class="feed">
         <div class="feedcontent">
           <div id="insertion"></div>
-          <div id="instructions"></div><p>
+          <span class='but' id='loadButton'>Load more posts</span>
         </div>
       </div>
-      <div class="workarea"><div class="workcontent"></div></div>
-      <div class="scratcharea"><div class="scratchcontent"></div></div>
+      <div class="workarea"><div class="workcontent"><div id="workprompt">Click <span class="vote">+1</span> on a solution to vote for it. If you decide another solution is better, you can remove your vote by clicking <span class="vote">+1</span> again. Feel free to vote for your own post if you think it's the best answer.</div><div id="workinsertion"></div></div></div>
+      <div class="scratcharea"><div class="scratchcontent"><div id="scratchinsertion"></div></div></div>
   </div>
   <div class='round'>
     <textarea id='postArea' placeholder='Enter your thoughts.'></textarea>
@@ -34,7 +34,6 @@
         <p>
         <div class='buttonbar'>
           <span class='but' id='postButton'>Post</span>
-          <span class='but' id='loadButton'>Load more posts</span>
           <span class='but' id='tagButton'>Tag new topic</span>
           <span class='but' id='startDiscussion'>Join</span>
         </div>

@@ -7,9 +7,9 @@ var pur = require('dompurify');
 var initialText = '<h3><span id="title">loading discussion name...</span></h3>Choose your handle for this discussion: <input id="name" autofocus="true" type="text" placeholder="Required"><br><div><input id="savelogin" type="checkbox" checked> <label for="savelogin">Save my info on this browser?</label>&nbsp;&nbsp; <input id="upmod" type="checkbox"> <label for="upmod">Update my moderator status?</label></div><div class="modkey"><label for="modkey">Moderator key:</label> <input id="modkey" type="password"></div>';
 
 var firstRoundText = "Enter your thoughts below. It's fine if you don't address everything; just contribute as much as you can. \
-If you're truly stuck, you can make an empty post, and see some of what your peers are saying.<p>"
+If you're truly stuck, you can make an empty post, and see some of what your peers are saying."
 
-var nextRoundText = "Please read and consider these thoughts from your peers, then enter your thoughts below. If you like, feel free to load more of your peers' posts. Click &#x1F44D; for any contribution you find helpful or relevant &mdash; even if it\'s incomplete. Try to make each of your posts self-contained, since other readers may not have seen the same set of previous posts that you have. For this purpose, it may help to click <i>show raw</i>, to make it easier to preserve formatting if you copy and remix from earlier posts.<p>"
+var nextRoundText = "Please read and consider these thoughts from your peers, then enter your thoughts below. If you like, feel free to load more of your peers' posts.\n\nClick &#x1F44D; for any contribution you find helpful or relevant &mdash; even if it\'s incomplete.\n\nTry to make each of your posts self-contained, since other readers may not have seen the same set of previous posts that you have. For this purpose, it may help to click <i>show raw</i>, to make it easier to preserve formatting if you copy and remix from earlier posts."
 
 var handle = "Anonymous Wombat";
 var instance = null;
@@ -217,6 +217,11 @@ function like(x) {
   });
 }
 
+// Vote for a given post
+function vote(x, d) {
+  insertEl(d, 'workinsertion');
+}
+
 // Make a post by sending a POST request.
 // Optionally mark the post as Markdown-formatted or as a topic tag.
 function sendPost(text, useMark, tag) {
@@ -241,39 +246,51 @@ function sendPost(text, useMark, tag) {
 }
 
 // construct the HTML for a box that shows someone's post (along with stuff like date, a like button, etc.)
-function responseBox(res, likebut) {
+function responseBox(res, include) {
+  include = include || {};
   let out = '<div class="cooked">' + safeRender(res.text, res.md) + '</div>';
   out = out + '<div class="raw"><pre>' + asText(res.text) + '</pre></div>';
   let posttime = moment(res.created).fromNow();
   out = out + '<div class="postbot">';
   out = out + '<span class="posttime" data-created="' + res.created + '">' + posttime + '</span>';
-  out = out + '<span class="showraw"><label><input type="checkbox"> show raw</label></span>';
-  if (likebut) {
-    out = out + '<span class="like" id="' + res.id + '">&#x1F44D;</span>';
-  } else {
-    out = out + '<span class="like">&nbsp;</span>';
+  if (include.showraw) {
+    out = out + '<span class="showraw"><label><input type="checkbox"> show raw</label></span>';
   }
+  out = out + '<span class="postbotbuts">';
+  if (include.vote) {
+    out = out + '<span class="vote" id="' + res.id + '">+1</span>';
+  }
+  if (include.like) {
+    out = out + '<span class="like" id="' + res.id + '">&#x1F44D;</span>';
+  }
+  out = out + '</span>';
   out = out + '</div>';
   // out = out + '<div class="check">&#x2713;</div>';
   let d = document.createElement('div');
   d.classList.add("response");
   d.innerHTML = out;
-  if (likebut) {
+  if (include.like) {
     let lik = d.getElementsByClassName("like")[0];
     lik.addEventListener("click", () => like(lik));
   }
-  let raw = d.getElementsByClassName('raw')[0];
-  let cooked = d.getElementsByClassName('cooked')[0];
-  let rc = d.getElementsByTagName("input")[0];
-  rc.addEventListener("change", () => {
-    if (rc.checked) {
-      raw.style.display = "block";
-      cooked.style.display = "none";
-    } else {
-      cooked.style.display = "block";
-      raw.style.display = "none";
-    }
-  });
+  if (include.vote) {
+    let vot = d.getElementsByClassName("vote")[0];
+    vot.addEventListener("click", () => vote(vot, d));
+  }
+  if (include.showraw) {
+    let raw = d.getElementsByClassName('raw')[0];
+    let cooked = d.getElementsByClassName('cooked')[0];
+    let rc = d.getElementsByTagName("input")[0];
+    rc.addEventListener("change", () => {
+      if (rc.checked) {
+        raw.style.display = "block";
+        cooked.style.display = "none";
+      } else {
+        cooked.style.display = "block";
+        raw.style.display = "none";
+      }
+    });
+  }
   // let chk = d.getElementsByClassName("check")[0];
   // allChecks.push(chk);
   // d.addEventListener('dblclick', (evt) => {
@@ -314,9 +331,9 @@ function responses() {
   return shuffle()
   .then((res) => {
     if (res.length > 0) {
-      return res.map((x) => responseBox(x, true));
+      return res.map((x) => responseBox(x, { like: true, vote: true, showraw: true }));
     } else {
-      return [responseBox(emptypost, false)];
+      return [responseBox(emptypost, { like: false, vote: false, showraw: false })];
     }
   })
   .then((res) => {
@@ -333,6 +350,12 @@ function responses() {
   });
 }
 
+// insert an element in a given location
+function insertEl(r, where) {
+  var ins = document.getElementById(where);
+  ins.parentNode.insertBefore(r, ins);
+}
+
 // update display on receiving confirmation of a successful post
 function successfulPost (postText, useMark, tag) {
 
@@ -345,24 +368,32 @@ function successfulPost (postText, useMark, tag) {
     }
   }
 
-  // get insertion point
-  var ins = document.getElementById("insertion");
-
   // move the user's post up to the history
   var doc = {
     text: postText,
     md: useMark,
     created: Date.now()
   };
-  var r = responseBox(doc, false);
+  var r = responseBox(doc, { like: false, vote: true, showraw: true });
   r.classList.add('mypost');
   if (tag) {
     r.classList.add('tagpost');
   }
-  ins.parentNode.insertBefore(r, ins);
+  insertEl(r, 'insertion');
+  r.scrollIntoView();
+
+  doc = {
+    text: nextRoundText,
+    md: false,
+    created: Date.now()
+  }
+  r = responseBox(doc, { like: false, vote: false, showraw: false });
+  r.classList.add('instructions');
+  insertEl(r, 'insertion');
 
   // update instructions and enable load button
-  document.getElementById("instructions").innerHTML = nextRoundText;
+  // document.getElementById("instructions").innerHTML = nextRoundText;
+  document.getElementById("workprompt").style.display = "block";
   document.getElementById("loadButton").style.display = "inline";
   document.getElementById("postArea").focus();
 }
@@ -444,8 +475,19 @@ function firstRound() {
     } else {
       modtag.style.display = "none";
     }
-    document.getElementsByClassName("round")[0].style.display = "inline";
-    document.getElementById("instructions").innerHTML = firstRoundText;
+    let doc = {
+      text: firstRoundText,
+      created: Date.now(),
+      // discussion: discussion,
+      // author: handle,
+      // instance: instance,
+      md: true
+    }
+    let instruct = responseBox(doc, { like: false, vote: false, showraw: false });
+    instruct.classList.add('instructions');
+    insertEl(instruct, 'insertion');
+    // document.getElementById("instructions").innerHTML = firstRoundText;
+    document.getElementsByClassName("round")[0].style.display = "block";
     document.getElementById("postArea").focus();
     savecheck.readonly = true;
     savecheck.disabled = true;

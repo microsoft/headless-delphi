@@ -49,13 +49,13 @@
 
 - Client
     - In progress
-        - add my own handle to title floater?
+        - be able to undo a vote
+        - have a way to pop up a markdown cheat sheet
         - better interface than double clicking to endorse?
         - add a way to edit posts? or maybe keep all versions and just mark that new post is an edit?
-        - make the instructions not take up so much space all the time? (maybe treat them like a post?)
-        - have a way to pop up a markdown cheat sheet
 
     - Questions
+        - add user's entered handle to the title floater box?
         - add a way to show a (floating?) prompt selected by the moderator?
         - or treat new topics as post and add to feed?
         - add a way for moderator to undo a tag post (or select a previous discussion to go back to)?
@@ -73,4 +73,7 @@
         - don't insert <CR> when we press ctrl-<CR> in the post box
 
     - Done
-        - three column layout: feed, work area, scratch area
+        - function to insert an element in a column
+        - move the "load more" button to bottom of feed
+        - treat instructions like a post
+        - added a vote button
