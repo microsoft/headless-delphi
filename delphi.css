@@ -6,6 +6,22 @@ body {
   margin-right: 7ex;
   /* position: relative; */
 }
+#popup {
+  position: absolute;
+  top: 1em;
+  bottom: 1em;
+  left: 25%;
+  right: 25%;
+  padding: 0.5rem 1rem;
+  overflow: scroll;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 5px;
+  display: none;
+  /* display: flex; */
+  flex-direction: column;
+  justify-content: space-between;
+}
 .columns {
   display: flex;
 }
@@ -75,10 +91,6 @@ body {
   position: relative;
   left: 2px;
 }
-/* .responselist {
-  display: flex;
-  flex-wrap: wrap;
-} */
 .response {
   margin-bottom: 1.2rem;
   padding: 0.5rem 1rem;
@@ -115,6 +127,9 @@ body {
   overflow: hidden;
   position: relative;
 }
+#popup .raw, #popup .cooked {
+  max-height: none;
+}
 .vspace {
   width: 1px;
   height: 1.75em;
@@ -134,6 +149,9 @@ body {
   background-image: linear-gradient(#bb88dd00,#bb88ddbb,#bb88ddff);
 }
 .instructions .overflow {
+  background-image: linear-gradient(#ffffff00,#ffffffbb,#ffffffff);
+}
+#popup .overflow {
   background-image: linear-gradient(#ffffff00,#ffffffbb,#ffffffff);
 }
 .postbot {
@@ -169,6 +187,17 @@ body {
   cursor: pointer;
 }
 .vote:active {
+  position: relative;
+  right: -2px;
+}
+.info {
+  font-size: 80%;
+  color: darkblue;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+}
+.info:active {
   position: relative;
   right: -2px;
 }
@@ -255,56 +284,56 @@ body {
 label {
   font-size: small;
 }
-.response img {
+.md img {
   max-width: 100%;
 }
-.response h1, .mypost h1 {
+.md h1 {
   font-size: 1.25em;
   margin-top: 0.25em;
   margin-bottom: 0.25em;
   font-weight: bold;
 }
-.response h2, .mypost h2 {
+.md h2 {
   font-size: 1.1em;
   margin-top: 0.25em;
   margin-bottom: 0.25em;
   font-weight: bold;
 }
-.response h3, .mypost h3 {
+.md h3 {
   font-size: 1.0em;
   margin-top: 0.25em;
   margin-bottom: 0.25em;
   font-weight: bold;
 }
-.response h4, .mypost h4 {
+.md h4 {
   font-size: 1.0em;
   margin-top: 0.25em;
   margin-bottom: 0.25em;
   font-weight: bold;
   font-style: italic;
 }
-.response h5, .mypost h5 {
+.md h5 {
   font-size: 1.0em;
   margin-top: 0.25em;
   margin-bottom: 0.25em;
   font-weight: normal;
   font-style: italic;
 }
-.response h6, .mypost h6 {
+.md h6 {
   font-size: 0.75em;
   margin-top: 0.25em;
   margin-bottom: 0em;
   font-weight: bold;
 }
-.response p, .mypost p {
+.md p {
   margin-top: 0.5em;
   margin-bottom: 0.75em;
 }
-.response table, .mypost table {
+.md table {
   border-collapse: collapse;
   margin: 0 1em;
 }
-.response td, .mypost td, .response th, .mypost th {
+.md td, .md th {
   border: 1px solid black;
   padding: .25em;
 }

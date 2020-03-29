@@ -3,13 +3,14 @@ var md = require('markdown-it')(),
     mk = require('markdown-it-katex');
 md.use(mk);
 var pur = require('dompurify');
+var mkhelp = require('./mdhelp');
 
-var initialText = '<h3><span id="title">loading discussion name...</span></h3>Choose your handle for this discussion: <input id="name" autofocus="true" type="text" placeholder="Required"><br><div><input id="savelogin" type="checkbox" checked> <label for="savelogin">Save my info on this browser?</label>&nbsp;&nbsp; <input id="upmod" type="checkbox"> <label for="upmod">Update my moderator status?</label></div><div class="modkey"><label for="modkey">Moderator key:</label> <input id="modkey" type="password"></div>';
+const initialText = '<h3><span id="title">loading discussion name...</span></h3>Choose your handle for this discussion: <input id="name" autofocus="true" type="text" placeholder="Required"><br><div><input id="savelogin" type="checkbox" checked> <label for="savelogin">Save my info on this browser?</label>&nbsp;&nbsp; <input id="upmod" type="checkbox"> <label for="upmod">Update my moderator status?</label></div><div class="modkey"><label for="modkey">Moderator key:</label> <input id="modkey" type="password"></div>';
 
-var firstRoundText = "Enter your thoughts below. It's fine if you don't address everything; just contribute as much as you can. \
+const firstRoundText = "Enter your thoughts below. It's fine if you don't address everything; just contribute as much as you can. \
 If you're truly stuck, you can make an empty post, and see some of what your peers are saying."
 
-var nextRoundText = "Please read and consider these thoughts from your peers, then enter your thoughts below. If you like, feel free to load more of your peers' posts.\n\nClick &#x1F44D; for any contribution you find helpful or relevant &mdash; even if it\'s incomplete.\n\nTry to make each of your posts self-contained, since other readers may not have seen the same set of previous posts that you have. For this purpose, it may help to click <i>show raw</i>, to make it easier to preserve formatting if you copy and remix from earlier posts."
+const nextRoundText = "Please read and consider these thoughts from your peers, then enter your thoughts below. If you like, feel free to load more of your peers' posts.\n\nClick &#x1F44D; for any contribution you find helpful or relevant &mdash; even if it\'s incomplete.\n\nTry to make each of your posts self-contained, since other readers may not have seen the same set of previous posts that you have. For this purpose, it may help to click <i>show raw</i>, to make it easier to preserve formatting if you copy and remix from earlier posts."
 
 var handle = "Anonymous Wombat";
 var instance = null;
@@ -92,6 +93,8 @@ function init () {
   loadbut.addEventListener("click", loadMore);
   var tagbut = document.getElementById("tagButton");
   tagbut.addEventListener("click", nextTag);
+  var mdinfobut = document.getElementById("mdinfobut");
+  mdinfobut.addEventListener("click", mdPop);
   wait(300).then(() => {
     namebox.addEventListener("keyup", (e) => {
       if (e.key == "Enter") {
@@ -101,6 +104,7 @@ function init () {
   });
   var postArea = document.getElementById("postArea");
   var round = document.getElementsByClassName("round")[0];
+  var popup = document.getElementById("popup");
   postArea.addEventListener("keyup", (e) => {
     if (e.key == "Enter" && e.ctrlKey) {
       nextRound();
@@ -112,6 +116,9 @@ function init () {
   document.addEventListener("click", (e) => {
     if (!e.target.closest('.round')) {
       round.classList.add('min');
+    }
+    if (!e.target.closest('#popup') && !e.target.closest('#mdinfobut')) {
+      popup.style.display = "none";
     }
   });
   var upmoddiv = document.getElementsByClassName('modkey')[0];
@@ -227,6 +234,21 @@ function like(x) {
   });
 }
 
+// pop up some info about Markdown
+function mdPop() {
+  var popup = document.getElementById("popup");
+  var doc = {
+    text: mkhelp.mdText,
+    md: true,
+    created: Date.now()
+  };
+  var r = responseBox(doc, { like: false, vote: false, showraw: true });
+  r.classList.remove('response');
+  popup.innerHTML = '';
+  popup.appendChild(r);
+  popup.style.display = 'flex';
+}
+
 // Vote for a given post
 function vote(x, d) {
   let voted = x.classList.contains('voted');
@@ -265,7 +287,7 @@ function sendPost(text, useMark, tag) {
 // construct the HTML for a box that shows someone's post (along with stuff like date, a like button, etc.)
 function responseBox(res, include) {
   include = include || {};
-  let out = '<div class="cooked">' + safeRender(res.text, res.md) + '<div class="vspace"></div><div class="overflow"></div></div>';
+  let out = '<div class="cooked md">' + safeRender(res.text, res.md) + '<div class="vspace"></div><div class="overflow"></div></div>';
   out = out + '<div class="raw"><pre>' + asText(res.text) + '</pre><div class="vspace"></div><div class="overflow"></div></div>';
   let posttime = moment(res.created).fromNow();
   out = out + '<div class="postbot">';

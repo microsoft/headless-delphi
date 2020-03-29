@@ -1,6 +1,6 @@
 all: bundle.js
 
-bundle.js: delphi.js
+bundle.js: delphi.js mdhelp.js
 	browserify delphi.js -o bundle.js
 
 clean:
