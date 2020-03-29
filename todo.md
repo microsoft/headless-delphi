@@ -52,10 +52,9 @@
     - In progress
         - properly float postbot in popover
         - add close button to popover
+        - allow bringing up a pop-over to read a long post or preview own post
         - add a way to edit posts? or maybe keep all versions and just mark that new post is an edit? or maybe determine automatically by similarity?
         - button to show/reload top posts
-        - allow bringing up a pop-over to read a long post or preview own post
-        - have a way to pop up a markdown cheat sheet
         - badge posts with their #likes, #votes
         - rewrite instructions
 
@@ -80,6 +79,6 @@
         - don't insert <CR> when we press ctrl-<CR> in the post box
 
     - Done
-        - made it easier to scroll the feed (in a shortly previous commit)
-        - added a popover window
-        - made (?) after "use markdown" popover a help text
+        - CSS fixes for markdown
+        - links open in a new tab
+

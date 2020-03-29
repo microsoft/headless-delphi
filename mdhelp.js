@@ -1,6 +1,6 @@
 exports.mdText = `# Markdown sample
-## (Use "show raw" to see how it works.)
-### There are 6 levels of heading, but you get the idea...
+## (Use "show raw" below to see how it works.)
+### There are 6 possible levels of headings, but you get the idea...
 
 Lorem ipsum dolor sit amet
 

@@ -289,25 +289,25 @@ label {
 }
 .md h1 {
   font-size: 1.25em;
-  margin-top: 0.25em;
+  margin-top: 0.5em;
   margin-bottom: 0.25em;
   font-weight: bold;
 }
 .md h2 {
   font-size: 1.1em;
-  margin-top: 0.25em;
+  margin-top: 0.5em;
   margin-bottom: 0.25em;
   font-weight: bold;
 }
 .md h3 {
   font-size: 1.0em;
-  margin-top: 0.25em;
+  margin-top: 0.5em;
   margin-bottom: 0.25em;
   font-weight: bold;
 }
 .md h4 {
   font-size: 1.0em;
-  margin-top: 0.25em;
+  margin-top: 0.4em;
   margin-bottom: 0.25em;
   font-weight: bold;
   font-style: italic;
@@ -336,6 +336,16 @@ label {
 .md td, .md th {
   border: 1px solid black;
   padding: .25em;
+}
+.md blockquote {
+  padding: 0 0.3em;
+  border-left: 1px solid black;
+  margin: 0.5em 2em;
+  /* border-radius: 2px; */
+}
+.md blockquote p {
+  margin-top: 0.25em;
+  margin-bottom: 0.5em;
 }
 .moderator {
   font-size: xx-small;
