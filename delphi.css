@@ -163,6 +163,19 @@ body {
   align-items: baseline;
   /* margin-top: 0.5ex; */
 }
+#popup .postbot {
+  position: sticky;
+  background-color: #ffffffdd;
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+  padding: 0.3em;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+#popup .showraw {
+  background-color: #ffffff00;
+}
 .posttime {
   flex-basis: 33%;
   flex-grow: 1;
@@ -250,7 +263,8 @@ body {
 }
 #title {
   color: #444444;
-  padding: 0.2em;
+  padding: 0.3em;
+  border: 1px solid black;
   border-radius: 3px;
 }
 #instructions {

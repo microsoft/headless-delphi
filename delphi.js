@@ -386,7 +386,7 @@ function shuffle() {
     }
   })
   .then((resp) => {
-    console.log(resp);
+    // console.log(resp);
     if (resp.length > 0 && resp[0].serverVersion != vers.version) {
       warnVersion(resp[0].serverVersion);
     }
@@ -394,7 +394,7 @@ function shuffle() {
   })
 }
 
-// construct a row of the feed
+// add a group of 3 posts to the feed
 function responses() {
   const emptypost = { 
     text: '_No posts available, please load more in a bit..._', 

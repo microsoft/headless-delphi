@@ -32,6 +32,7 @@
     - Questions
         - keep a DB of allowed discussionIds with their titles and modtokens?
         - ability to show a prompt to everyone, e.g., in the discussion title box
+        - should server version come as a response header instead of in response body?
 
     - Not yet
         - collect discussion properties into a single object: moderator tokens, title, ...
@@ -46,11 +47,9 @@
         - provide a robots.txt?
 
     - Done
-        - add current software version ID to all JSON responses
 
 - Client
     - In progress
-        - properly float postbot in popover
         - add close button to popover
         - allow bringing up a pop-over to read a long post or preview own post
         - add a way to edit posts? or maybe keep all versions and just mark that new post is an edit? or maybe determine automatically by similarity?
@@ -78,4 +77,4 @@
         - don't insert <CR> when we press ctrl-<CR> in the post box
 
     - Done
-        - check to see if we're out of date by comparing to server version ID
+        - properly float postbot in popover
