@@ -4,6 +4,7 @@ var md = require('markdown-it')(),
 md.use(mk);
 var pur = require('dompurify');
 var mkhelp = require('./mdhelp');
+var vers = require('./version');
 
 const initialText = '<h3><span id="title">loading discussion name...</span></h3>Choose your handle for this discussion: <input id="name" autofocus="true" type="text" placeholder="Required"><br><div><input id="savelogin" type="checkbox" checked> <label for="savelogin">Save my info on this browser?</label>&nbsp;&nbsp; <input id="upmod" type="checkbox"> <label for="upmod">Update my moderator status?</label></div><div class="modkey"><label for="modkey">Moderator key:</label> <input id="modkey" type="password"></div>';
 
@@ -16,7 +17,8 @@ var handle = "Anonymous Wombat";
 var instance = null;
 var discussion = null;
 var moderatorToken = null;
-var allChecks = [];
+// var allChecks = [];
+var messageBatch = {};
 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -62,6 +64,9 @@ function init () {
     }
   })
   .then((res) => {
+    if (res.serverVersion != vers.version) {
+      warnVersion(res.serverVersion);
+    }
     document.getElementById("title").textContent = res.title;
     document.getElementById("title").style.backgroundColor = res.bgcolor;
     document.getElementById("floattitle").textContent = res.title;
@@ -198,8 +203,8 @@ function wait(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
-// put up a diagnostic message
-function message(text) {
+// put up a diagnostic message, ignoring rate limit (shouldn't call this directly)
+function messageNoRateLimit(text) {
   var msgs = document.getElementsByClassName("messages")[0];
   var msg = document.createElement('div');
   msg.classList.add("message");
@@ -209,6 +214,17 @@ function message(text) {
   .then(() => msg.classList.add('leaving'))
   .then(() => wait(800))
   .then(() => msg.parentNode.removeChild(msg));
+}
+
+// put up a diagnostic message, limiting rate by batching and summarizing high-rate messages
+function message(text) {
+  // FIXME: implement rate limit
+  messageNoRateLimit(text);
+}
+
+// package up a long warning message that would otherwise appear in several places
+function warnVersion(serverVersion) {
+  message('Warning: the server is running a more recent version of this software. Some functionality may not work as expected. Please reload to get the latest version. Server version: ' + serverVersion);
 }
 
 // handle a click on the like button: toggle liked-ness, and
@@ -222,11 +238,21 @@ function like(x) {
     body: JSON.stringify({ handle: handle, instance: instance })
   };
   fetch("like/" + x.id + "?d=" + discussion, fetchData)
-  .then(() => {
-    if (liked) {
-      x.classList.remove('liked');
+  .then((resp) => {
+    if (resp.ok) {
+      if (liked) {
+        x.classList.remove('liked');
+      } else {
+        x.classList.add('liked');
+      }
     } else {
-      x.classList.add('liked');
+      message('Warning: server couldn\'t store a like');
+    }
+    return resp.json();
+  })
+  .then(resp => {
+    if (resp.serverVersion != vers.version) {
+      warnVersion(resp.serverVersion);
     }
   })
   .catch((err) => {
@@ -358,6 +384,13 @@ function shuffle() {
     } else {
       throw new Error("Server refused to provide a new post")
     }
+  })
+  .then((resp) => {
+    console.log(resp);
+    if (resp.length > 0 && resp[0].serverVersion != vers.version) {
+      warnVersion(resp[0].serverVersion);
+    }
+    return resp;
   })
 }
 
@@ -505,6 +538,14 @@ function firstRound() {
           moderatorToken = null;
           message("Invalid moderator token");
         }
+        resp.clone().text().then((b) => console.log(b));
+        return resp.json();
+      })
+      .then((resp) => {
+        if (resp.serverVersion != vers.version) {
+          warnVersion(resp.serverVersion);
+        }
+        return resp;
       })
       .catch((err) => {
         console.error(err);
@@ -558,14 +599,21 @@ function nextRound() {
   // insert user's post
   if (postText) {
     sendPost(postText, useMark, false)
-    .then((res) => {
-      if (res.ok) {
+    .then((resp) => {
+      if (resp.ok) {
         successfulPost(postText, useMark, false);
         postArea.value = "";
         loadMore();
       } else {
         message("Failed to save post; please check that the discussion URL is valid.");
       }
+      return resp.json();
+    })
+    .then((resp) => {
+      if (resp.serverVersion != vers.version) {
+        warnVersion(resp.serverVersion);
+      }
+      return resp;
     })
     .catch((error) => {
       message('Error saving the post; please try again');
@@ -588,17 +636,24 @@ function nextTag() {
 
   // insert user's post
   sendPost(postText, useMark, true)
-  .then((res) => {
-    if (res.ok) {
+  .then((resp) => {
+    if (resp.ok) {
       successfulPost(postText, useMark, true);
       postArea.value = "";
       loadMore();
     } else {
       message("Failed to save tag; please check that your moderator key is valid for this discussion.");
     }
+    return resp.json();
+  })
+  .then((resp) => {
+    if (resp.serverVersion != vers.version) {
+      warnVersion(resp.serverVersion);
+    }
+    return resp;
   })
   .catch((error) => {
-    message('Error saving the new tag; please try again');
+    message('Error saving the new topic post; please try again');
     console.error("Error: " + JSON.stringify(error));
   });
 }

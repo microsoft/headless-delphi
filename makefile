@@ -1,6 +1,6 @@
 all: bundle.js
 
-bundle.js: delphi.js mdhelp.js
+bundle.js: delphi.js mdhelp.js version.js
 	browserify delphi.js -o bundle.js
 
 clean:
@@ -9,8 +9,8 @@ clean:
 run: bundle.js
 	node server.js
 
-zip: bundle.js delphi.css delphi.html favicon.ico package.json server.js
-	zip deploy bundle.js delphi.css delphi.html favicon.ico package.json server.js 
+zip: bundle.js delphi.css delphi.html favicon.ico package.json server.js version.js
+	zip deploy bundle.js delphi.css delphi.html favicon.ico package.json server.js version.js
 	zip -r deploy node_modules/
 
 # for zipdeploy: would use the following, but FTP credentials don't seem to work

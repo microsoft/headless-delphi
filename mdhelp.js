@@ -105,7 +105,7 @@ You can also specify the image link later in the document:
 
 This demo post is adapted from the 
 [Markdown-it demo](https://markdown-it.github.io) 
-to remove features that aren't enabled here.
+to add KaTeX and remove features that aren't enabled here.
 `;
 
 // console.log(exports.mdText);

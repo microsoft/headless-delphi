@@ -3,6 +3,7 @@ const http = require('http');
 const path = require('path');
 const fs = require('fs');
 const loki = require('lokijs');
+const vers = require('./version');
 
 const discussionIds = { '5X324': { title: 'Test discussion', bgcolor: '#7090c0', modtokens: { '92HA7': 'somebody@example.com' }}};
 
@@ -124,6 +125,7 @@ function checkAllowedFields(post, id) {
       res.id = post.$loki;
     }
   }
+  res.serverVersion = vers.version;
   return res;
 }
 
@@ -224,8 +226,10 @@ function httpHandler(request, response) {
         var res = { 
           title: discussionIds[reqpath.base]['title'], 
           bgcolor: discussionIds[reqpath.base]['bgcolor'] || 'auto', 
-          id: reqpath.base 
+          id: reqpath.base,
+          serverVersion: vers.version
         };
+        response.setHeader("Content-Type", "application/json");
         response.end(JSON.stringify(res));
       } else {
         response.statusCode = 404;
@@ -276,6 +280,7 @@ function httpHandler(request, response) {
           // console.log("result: " + JSON.stringify(picked));
           picked = picked.map((x) => checkAllowedFields(x, "out"));
           // console.log("result: " + JSON.stringify(picked));
+          response.setHeader("Content-Type", "application/json");
           response.end(JSON.stringify(picked));
         })
         .catch((err) => {
@@ -286,8 +291,9 @@ function httpHandler(request, response) {
       } else {                                                         // GET ITEM BY ID
         getPosts(discussion)
         .then((posts) => {
-          let res = { text: "#### Lorem ipsum\n\nDolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", special: "lorem", created: 0, author: "Cicero", discussion: "5X324", md: true, instance: "000000000000000" };
+          let res = { serverVersion: vers.version, text: "#### Lorem ipsum\n\nDolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", special: "lorem", created: 0, author: "Cicero", discussion: "5X324", md: true, instance: "000000000000000" };
           res = checkAllowedFields(res, "out");
+          response.setHeader("Content-Type", "application/json");
           response.end(JSON.stringify(res));
         })
         .catch((err) => {
@@ -334,7 +340,8 @@ function httpHandler(request, response) {
         body.created = Date.now();
         body = checkAllowedFields(body, false);
         posts.insert(body);
-        response.end(JSON.stringify({ status: 'success', id: body.$loki }))
+        response.setHeader("Content-Type", "application/json");
+        response.end(JSON.stringify({ status: 'success', id: body.$loki, serverVersion: vers.version }))
       } else if (postType == 'tag') {                               // POST NEW TAG
         // console.log('post tag');
         body.created = Date.now();
@@ -346,7 +353,8 @@ function httpHandler(request, response) {
           posts.insert(body);
           delete tags[discussion];
           // console.log('inserted tag: ' + JSON.stringify(body));
-          response.end(JSON.stringify({ status: 'success', id: body.$loki }));
+          response.setHeader("Content-Type", "application/json");
+          response.end(JSON.stringify({ status: 'success', id: body.$loki, serverVersion: vers.version }));
         } else {
           console.log('bad moderator token');
           response.statusCode = 403;
@@ -364,16 +372,18 @@ function httpHandler(request, response) {
           l[hi] = Date.now();
           likedPost.likes = l;
           posts.update(likedPost);
-          response.end();
+          response.setHeader("Content-Type", "application/json");
+          response.end(JSON.stringify({ status: 'success', serverVersion: vers.version }));
         }
       } else if (postType == 'mod') {                               // POST MOD
         // console.log('post mod');
         if (body.modtoken in discussionIds[discussion].modtokens) {
-          response.body = JSON.stringify({ status: 'success' });
+          response.setHeader("Content-Type", "application/json");
+          response.end(JSON.stringify({ status: 'success', serverVersion: vers.version }));
         } else {
           response.statusCode = 403;
+          response.end();
         }
-        response.end();
       } else {                                                      // no other POSTs allowed
         console.log("unexpected POST type")
         response.statusCode = 403;

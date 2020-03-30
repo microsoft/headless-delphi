@@ -34,19 +34,19 @@
         - ability to show a prompt to everyone, e.g., in the discussion title box
 
     - Not yet
-        - add current software version ID to responses
         - collect discussion properties into a single object: moderator tokens, title, ...
         - load a real item on GET ITEM
         - make a pass of checking that we catch appropriate errors
-        - figure out how to exclude .npmignore'd files on deploy
         - restart server on errors
         - make sure to close db on exit
+        - figure out how to exclude .npmignore'd files on deploy
         - show how many likes each post has? (only for moderators? only for some other group?)
         - show posters when their posts are liked?
         - log IP or other identifying info for posters?
         - provide a robots.txt?
 
     - Done
+        - add current software version ID to all JSON responses
 
 - Client
     - In progress
@@ -54,6 +54,7 @@
         - add close button to popover
         - allow bringing up a pop-over to read a long post or preview own post
         - add a way to edit posts? or maybe keep all versions and just mark that new post is an edit? or maybe determine automatically by similarity?
+        - scroll a new post into position only after adding stuff below it
         - button to show/reload top posts
         - badge posts with their #likes, #votes
         - rewrite instructions
@@ -69,16 +70,12 @@
         - good way to show post previews for markdown?
 
     - Not yet
+        - rate-limit warning messages
         - is there a way to enter tabs into the text box?
-        - improve style sheet for tables, block quotes, code blocks
         - add a way to easily link to past posts
         - for post, load, tag: change button appearance while waiting for response; prevent repeated clicks
-        - add version ID
-        - check to see if we're out of date by comparing to server version ID
         - add recaptcha?
         - don't insert <CR> when we press ctrl-<CR> in the post box
 
     - Done
-        - CSS fixes for markdown
-        - links open in a new tab
-
+        - check to see if we're out of date by comparing to server version ID
