@@ -50,8 +50,8 @@
 
 - Client
     - In progress
-        - add close button to popover
-        - allow bringing up a pop-over to read a long post or preview own post
+        - add an "expand" control that brings up a long post in the popover
+        - add a "preview" control that uses popover to show what markdown will look like in my post
         - add a way to edit posts? or maybe keep all versions and just mark that new post is an edit? or maybe determine automatically by similarity?
         - scroll a new post into position only after adding stuff below it
         - button to show/reload top posts
@@ -77,4 +77,5 @@
         - don't insert <CR> when we press ctrl-<CR> in the post box
 
     - Done
-        - properly float postbot in popover
+        - add close button to popover
+        - improved CSS and behavior for popover

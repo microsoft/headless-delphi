@@ -119,7 +119,7 @@ function init () {
     round.classList.remove('min');
   });
   document.addEventListener("click", (e) => {
-    if (!e.target.closest('.round')) {
+    if (!e.target.closest('.round') && !e.target.closest('#popup')) {
       round.classList.add('min');
     }
     if (!e.target.closest('#popup') && !e.target.closest('#mdinfobut')) {
@@ -268,11 +268,15 @@ function mdPop() {
     md: true,
     created: Date.now()
   };
-  var r = responseBox(doc, { like: false, vote: false, showraw: true });
+  var r = responseBox(doc, { like: false, vote: false, showraw: true, closebox: true });
   r.classList.remove('response');
   popup.innerHTML = '';
   popup.appendChild(r);
   popup.style.display = 'flex';
+  let x = r.getElementsByClassName('closebut')[0];
+  x.addEventListener('click', () => {
+    popup.style.display = 'none';
+  });
 }
 
 // Vote for a given post
@@ -313,7 +317,11 @@ function sendPost(text, useMark, tag) {
 // construct the HTML for a box that shows someone's post (along with stuff like date, a like button, etc.)
 function responseBox(res, include) {
   include = include || {};
-  let out = '<div class="cooked md">' + safeRender(res.text, res.md) + '<div class="vspace"></div><div class="overflow"></div></div>';
+  let out = '';
+  if (include.closebox) {
+    out = out + "<div class='closebut'>&times;</div>";
+  }
+  out = out + '<div class="cooked md">' + safeRender(res.text, res.md) + '<div class="vspace"></div><div class="overflow"></div></div>';
   out = out + '<div class="raw"><pre>' + asText(res.text) + '</pre><div class="vspace"></div><div class="overflow"></div></div>';
   let posttime = moment(res.created).fromNow();
   out = out + '<div class="postbot">';
@@ -404,9 +412,9 @@ function responses() {
   return shuffle()
   .then((res) => {
     if (res.length > 0) {
-      return res.map((x) => responseBox(x, { like: true, vote: true, showraw: true }));
+      return res.map((x) => responseBox(x, { like: true, vote: true, showraw: true, closebox: false }));
     } else {
-      return [responseBox(emptypost, { like: false, vote: false, showraw: false })];
+      return [responseBox(emptypost, { like: false, vote: false, showraw: false, closebox: false })];
     }
   })
   .then((res) => {
@@ -447,7 +455,7 @@ function successfulPost (postText, useMark, tag) {
     md: useMark,
     created: Date.now()
   };
-  var r = responseBox(doc, { like: false, vote: true, showraw: true });
+  var r = responseBox(doc, { like: false, vote: true, showraw: true, closebox: false });
   r.classList.add('mypost');
   if (tag) {
     r.classList.add('tagpost');
@@ -460,7 +468,7 @@ function successfulPost (postText, useMark, tag) {
     md: false,
     created: Date.now()
   }
-  r = responseBox(doc, { like: false, vote: false, showraw: false });
+  r = responseBox(doc, { like: false, vote: false, showraw: false, closebox: false });
   r.classList.add('instructions');
   insertEl(r, 'insertion');
 
@@ -538,7 +546,7 @@ function firstRound() {
           moderatorToken = null;
           message("Invalid moderator token");
         }
-        resp.clone().text().then((b) => console.log(b));
+        // resp.clone().text().then((b) => console.log(b));
         return resp.json();
       })
       .then((resp) => {
@@ -564,7 +572,7 @@ function firstRound() {
       // instance: instance,
       md: true
     }
-    let instruct = responseBox(doc, { like: false, vote: false, showraw: false });
+    let instruct = responseBox(doc, { like: false, vote: false, showraw: false, closebox: false });
     instruct.classList.add('instructions');
     insertEl(instruct, 'insertion');
     // document.getElementById("instructions").innerHTML = firstRoundText;

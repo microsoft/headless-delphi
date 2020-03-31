@@ -98,12 +98,9 @@ body {
   border-radius: 2px;
   background-color: #ffffdd;
   margin-right: 1.2rem;
-  /* flex-basis: calc(33.33% - 2ex - 2em - 2px);
-  min-width: calc(33.33% - 2ex - 2em - 2px); */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  /* position: relative; */
 }
 .mypost {
   background-color: #ddddf0;
@@ -161,7 +158,6 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  /* margin-top: 0.5ex; */
 }
 #popup .postbot {
   position: sticky;
@@ -172,9 +168,6 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-}
-#popup .showraw {
-  background-color: #ffffff00;
 }
 .posttime {
   flex-basis: 33%;
@@ -229,14 +222,12 @@ body {
 }
 .liked, .voted {
   background-color: #cfaa44;
-  /* background-color: #c09f33; */
 }
 .showraw {
   flex-basis: 33%;
   flex-grow: 1;
   font-size: xx-small;
   font-style: italic;
-  background-color: inherit;
 }
 .messages {
   position: fixed;
@@ -355,11 +346,13 @@ label {
   padding: 0 0.3em;
   border-left: 1px solid black;
   margin: 0.5em 2em;
-  /* border-radius: 2px; */
 }
 .md blockquote p {
   margin-top: 0.25em;
   margin-bottom: 0.5em;
+}
+.md.cooked pre {
+  margin-left: 1.5em;
 }
 .moderator {
   font-size: xx-small;
@@ -393,28 +386,6 @@ label {
   font-weight: bold;
   display: none;
 }
-/* .check {
-  font-size: x-large;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  text-align: center;
-  max-width: 0.9em;
-  max-height: 1.15em;
-  min-height: 1.15em;
-  padding: 0.25em;
-  border: 1px solid black;
-  border-radius: 5px;
-  color: darkolivegreen;
-  background-color: rgba(211, 211, 211, 0.9);
-  display: none;
-}
-.check.endorsed {
-  display: inline;
-} */
 .initial {
   width: 100%;
 }
@@ -432,4 +403,14 @@ label {
 }
 #floattitle {
   margin-bottom: 0.5em;
+}
+.closebut {
+  font-size: x-large;
+  position: sticky;
+  float: right;
+  top: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+  color: #bbbbbb;
 }
