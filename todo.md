@@ -13,6 +13,9 @@
         - add a way for moderators to go back and view older topics?
         - add a way for moderators (and maybe ordinary users) to clear viewed status (to re-see older posts)?
         - add an interface for users or moderators to create subgroups/breakouts within a discussion?
+        - how to establish shared secrets, e.g. for moderators
+        - ability to set up and return from breakout discussions
+        - vulnerability advisory for katex (npm audit)
     
     - Not yet
         - add a way to use Azure CLI to zipdeploy
@@ -50,6 +53,7 @@
 
 - Client
     - In progress
+        - make CSS for .response closer to that for popover
         - add an "expand" control that brings up a long post in the popover
         - add a "preview" control that uses popover to show what markdown will look like in my post
         - add a way to edit posts? or maybe keep all versions and just mark that new post is an edit? or maybe determine automatically by similarity?
@@ -57,6 +61,7 @@
         - button to show/reload top posts
         - badge posts with their #likes, #votes
         - rewrite instructions
+        - add disclaimer on login: no PII
 
     - Questions
         - button to show/reload posts that are similar to a given one?
@@ -66,7 +71,6 @@
         - or treat new topics as post and add to feed?
         - add a way for moderator to undo a tag post (or select a previous discussion to go back to)?
         - let moderator see poster handles?
-        - good way to show post previews for markdown?
 
     - Not yet
         - rate-limit warning messages
@@ -77,5 +81,3 @@
         - don't insert <CR> when we press ctrl-<CR> in the post box
 
     - Done
-        - add close button to popover
-        - improved CSS and behavior for popover
