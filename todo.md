@@ -20,6 +20,7 @@
     - Not yet
         - add a way to use Azure CLI to zipdeploy
         - make npm package
+        - when available, migrate from moment.js to Temporal
     
     - Done
 
