@@ -15,7 +15,6 @@
         - add an interface for users or moderators to create subgroups/breakouts within a discussion?
         - how to establish shared secrets, e.g. for moderators
         - ability to set up and return from breakout discussions
-        - vulnerability advisory for katex (npm audit)
     
     - Not yet
         - add a way to use Azure CLI to zipdeploy
@@ -23,6 +22,7 @@
         - when available, migrate from moment.js to Temporal
     
     - Done
+        - vulnerability advisory for katex (npm audit)
 
 - Server
 
