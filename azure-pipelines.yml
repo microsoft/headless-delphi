@@ -16,7 +16,8 @@ steps:
 - task: Semmle@0
   inputs:
     sourceCodeDirectory: '$(Build.SourcesDirectory)'
-    language: 'csharp'
+    language: 'javascript'
+    includeNodeModules: true
     querySuite: 'Recommended'
     timeout: '1800'
     ram: '16384'
