@@ -24,3 +24,8 @@ steps:
     addProjectDirToScanningExclusionList: true
   env:
     SYSTEM_ACCESSTOKEN: $(PATToken)
+- task: ComponentGovernanceComponentDetection@0
+  inputs:
+    scanType: 'Register'
+    verbosity: 'Verbose'
+    alertWarningLevel: 'High'
