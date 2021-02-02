@@ -1,0 +1,25 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Dummy Print Statement'
+
+- task: CredScan@2
+  inputs:
+    toolMajorVersion: 'V2'
+    outputFormat: 'sarif'
+
+- task: Semmle@0
+  inputs:
+    sourceCodeDirectory: '$(Build.SourcesDirectory)'
+    language: 'csharp'
+    querySuite: 'Recommended'
+    timeout: '1800'
+    ram: '16384'
+    addProjectDirToScanningExclusionList: true
+  env:
+    SYSTEM_ACCESSTOKEN: $(PATToken)
