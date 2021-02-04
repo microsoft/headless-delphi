@@ -37,6 +37,7 @@
         - keep a DB of allowed discussionIds with their titles and modtokens?
         - ability to show a prompt to everyone, e.g., in the discussion title box
         - should server version come as a response header instead of in response body?
+        - rate limit failed logins
 
     - Not yet
         - collect discussion properties into a single object: moderator tokens, title, ...
@@ -72,6 +73,7 @@
         - or treat new topics as post and add to feed?
         - add a way for moderator to undo a tag post (or select a previous discussion to go back to)?
         - let moderator see poster handles?
+        - do something interesting if discussion ID isn't given
 
     - Not yet
         - rate-limit warning messages

@@ -1,7 +1,6 @@
 "use strict";
-var md = require('markdown-it')(),
-    mk = require('markdown-it-katex');
-md.use(mk);
+var texmath = require('markdown-it-texmath');
+var md = require('markdown-it')().use(texmath);
 var pur = require('dompurify');
 var mkhelp = require('./mdhelp');
 var vers = require('./version');
@@ -18,7 +17,7 @@ var instance = null;
 var discussion = null;
 var moderatorToken = null;
 // var allChecks = [];
-var messageBatch = {};
+// var messageBatch = {};
 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -59,7 +58,7 @@ function init () {
     if (res.ok) {
       return res.json();
     } else {
-      message("The ID in this discussion URL appears to be invalid.");
+      // message("The ID in this discussion URL appears to be invalid.");
       throw new Error("Fetch of title failed: status " + res.status);
     }
   })
@@ -245,10 +244,11 @@ function like(x) {
       } else {
         x.classList.add('liked');
       }
+      return resp.json();
     } else {
       message('Warning: server couldn\'t store a like');
+      throw new Error('problem storing like')
     }
-    return resp.json();
   })
   .then(resp => {
     if (resp.serverVersion != vers.version) {
@@ -390,7 +390,7 @@ function shuffle() {
     if (res.ok) {
       return res.json();
     } else {
-      throw new Error("Server refused to provide a new post")
+      throw new Error("Server refused to provide a new post");
     }
   })
   .then((resp) => {
@@ -467,7 +467,7 @@ function successfulPost (postText, useMark, tag) {
     text: nextRoundText,
     md: false,
     created: Date.now()
-  }
+  };
   r = responseBox(doc, { like: false, vote: false, showraw: false, closebox: false });
   r.classList.add('instructions');
   insertEl(r, 'insertion');
@@ -533,7 +533,7 @@ function firstRound() {
       let fetchData = { 
         method: "POST", 
         headers: { "Content-Type": "application/json"},
-        body: JSON.stringify({ modtoken: moderatorToken, instance: instance })
+        body: JSON.stringify({ modtoken: moderatorToken, handle: handle, instance: instance })
       };
       fetch("mod?d=" + discussion, fetchData)
       .then((resp) => {
@@ -541,13 +541,13 @@ function firstRound() {
           document.getElementById("tagButton").style.display = "inline";
           document.getElementById("loadButton").style.display = "inline";
           modtag.style.display = "inline";  
+          return resp.json();
         } else {
           modtag.style.display = "none";
           moderatorToken = null;
-          message("Invalid moderator token");
+          throw new Error('invalid moderator token');
         }
         // resp.clone().text().then((b) => console.log(b));
-        return resp.json();
       })
       .then((resp) => {
         if (resp.serverVersion != vers.version) {
@@ -571,7 +571,7 @@ function firstRound() {
       // author: handle,
       // instance: instance,
       md: true
-    }
+    };
     let instruct = responseBox(doc, { like: false, vote: false, showraw: false, closebox: false });
     instruct.classList.add('instructions');
     insertEl(instruct, 'insertion');
@@ -612,10 +612,11 @@ function nextRound() {
         successfulPost(postText, useMark, false);
         postArea.value = "";
         loadMore();
+        return resp.json();
       } else {
-        message("Failed to save post; please check that the discussion URL is valid.");
+        throw new Error('result status: ' + resp.status + ' ' + resp.statusText);
+        // message("Failed to save post; please check that the discussion URL is valid.");
       }
-      return resp.json();
     })
     .then((resp) => {
       if (resp.serverVersion != vers.version) {
@@ -624,7 +625,7 @@ function nextRound() {
       return resp;
     })
     .catch((error) => {
-      message('Error saving the post; please try again');
+      message('Error saving the post; please try again, and check that the discussion ID is valid');
       console.error("Error: " + JSON.stringify(error));
     });
   } else {
@@ -649,10 +650,11 @@ function nextTag() {
       successfulPost(postText, useMark, true);
       postArea.value = "";
       loadMore();
+      return resp.json();
     } else {
-      message("Failed to save tag; please check that your moderator key is valid for this discussion.");
+      // message("Failed to save tag; please check that your moderator key is valid for this discussion.");
+      throw new Error("response: " + resp.status);
     }
-    return resp.json();
   })
   .then((resp) => {
     if (resp.serverVersion != vers.version) {
@@ -661,7 +663,7 @@ function nextTag() {
     return resp;
   })
   .catch((error) => {
-    message('Error saving the new topic post; please try again');
+    message('Error saving the new topic post; please try again, and check that you are logged in as moderator');
     console.error("Error: " + JSON.stringify(error));
   });
 }

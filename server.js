@@ -4,13 +4,20 @@ const path = require('path');
 const fs = require('fs');
 const loki = require('lokijs');
 const vers = require('./version');
+const az_ident = require('@azure/identity');
+const az_secrets = require('@azure/keyvault-secrets');
 
-const discussionIds = { '5X324': { title: 'Test discussion', bgcolor: '#7090c0', modtokens: { '92HA7': 'somebody@example.com' }}};
+const discussionIds = { '5X324': { title: 'Test discussion', bgcolor: '#7090c0', moderators: {'foo': null}}};
+
+// access to key vault
+const az_credential = new az_ident.DefaultAzureCredential();
+const az_client = new az_secrets.SecretClient("https://" + process.env["KEY_VAULT_NAME"] + ".vault.azure.net", az_credential);
 
 var server;       // the main HTTP server
 var dbs = {};     // cache: maps discussion IDs to DBs
 var posts = {};   // cache: maps discussion IDs to posts collections
 var tags = {};    // cache: maps discussion IDs to latest tags
+var mods = {};    // cache: maps moderator handles to their keys
 
 // construct or reconstruct the server from scratch
 function init() {
@@ -194,6 +201,37 @@ function pickPosts(nPosts, recency, handle, instance, discId) {
   });
 }
 
+// Check if we're a moderator and have permission to moderate a discussion.
+// Returns true (yes, OK), false (moderator but no permission), or null (not a moderator);
+// passes along the error if we fail to access the key vault
+async function checkMod(handle, modtoken, discussion) {
+
+  // retrieve token if necessary, and cache it if correct
+  // console.log(JSON.stringify(mods));
+  if (!(handle in mods)) {
+    console.log('requesting secret');
+    const tok = await az_client.getSecret('moderator-' + handle);
+    console.log('got secret');
+    // check permission
+    if (tok.value == modtoken) {
+      mods[handle] = tok.value;
+      console.log('successful login: ' + handle);
+    } else {
+      console.log('failed login:' + handle);
+      return null;
+    }
+  }
+
+  // check permission
+  if (mods[handle] == modtoken) {
+    return (handle in discussionIds[discussion].moderators);
+  } else {
+    console.log('bad token, clearing cache: ' + handle);
+    delete mods[handle];
+    return null;
+  }
+}
+
 // main handler for HTTP requests
 function httpHandler(request, response) {
   var requrl = new URL(request.url, 'http://example.com/'); // default is required here, but we don't use its value below
@@ -330,9 +368,9 @@ function httpHandler(request, response) {
       malformed = malformed || ((postType == 'item') && !(('text' in body) && ('author' in body)));
       malformed = malformed || ((postType == 'tag') && !(('text' in body) && ('author' in body) && ('modtoken' in body)));
       malformed = malformed || ((postType == 'like') && !('handle' in body));
-      malformed = malformed || ((postType == 'mod') && !('modtoken' in body));
+      malformed = malformed || ((postType == 'mod') && !(('modtoken' in body) && ('handle' in body)));
       if (malformed) {
-        console.log("empty or malformed post, ignored")
+        console.log("empty or malformed post, ignored");
         response.statusCode = 400;
         response.end();
       } else if (postType == 'item') {                              // POST ITEM
@@ -341,13 +379,14 @@ function httpHandler(request, response) {
         body = checkAllowedFields(body, false);
         posts.insert(body);
         response.setHeader("Content-Type", "application/json");
-        response.end(JSON.stringify({ status: 'success', id: body.$loki, serverVersion: vers.version }))
+        response.end(JSON.stringify({ status: 'success', id: body.$loki, serverVersion: vers.version }));
       } else if (postType == 'tag') {                               // POST NEW TAG
         // console.log('post tag');
         body.created = Date.now();
         body.special = 'tag';
         // console.log('valid keys: ' + discussionIds[discussion].modtokens);
-        if (body.modtoken in discussionIds[discussion].modtokens) {
+        if (checkMod(body.author, body.modtoken, discussion)) {
+//        if (body.modtoken in discussionIds[discussion].modtokens) {
           delete body.modtoken;
           body = checkAllowedFields(body, false);
           posts.insert(body);
@@ -377,28 +416,35 @@ function httpHandler(request, response) {
         }
       } else if (postType == 'mod') {                               // POST MOD
         // console.log('post mod');
-        if (body.modtoken in discussionIds[discussion].modtokens) {
-          response.setHeader("Content-Type", "application/json");
-          response.end(JSON.stringify({ status: 'success', serverVersion: vers.version }));
-        } else {
+        checkMod(body.handle, body.modtoken, discussion).then((success) => {
+          console.log('post mod, success = ' + success);
+          if (success) {
+            response.setHeader("Content-Type", "application/json");
+            response.end(JSON.stringify({ status: 'success', serverVersion: vers.version }));
+          } else {
+            response.statusCode = 403;
+            response.end();  
+          }
+        }).catch((e) => {
+          console.log('failed to retrieve key: ' + e);
           response.statusCode = 403;
-          response.end();
-        }
+          response.end();  
+        });
       } else {                                                      // no other POSTs allowed
-        console.log("unexpected POST type")
+        console.log("unexpected POST type");
         response.statusCode = 403;
         response.end();
       }
     })
     .catch((err) => {
-      console.error('Error while posting:' + JSON.stringify(err));
+      console.error('Error while handling POST:' + JSON.stringify(err));
       response.statusCode = 500;
       response.end();
     });
 
   // no requests besides GET and POST allowed
   } else {
-    console.log("unexpected method: " + method)
+    console.log("unexpected method: " + method);
     response.statusCode = 405;
     response.end();
   }
