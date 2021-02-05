@@ -3,13 +3,21 @@ Web app to facilitate roundless, headless Delphi-style discussions
 
 ### Getting started
 
-To run locally:
+We assume that node.js is installed: https://nodejs.org/en/download/ as well as browserify: http://browserify.org/#install.
+
+To grab dependencies, from the top directory, run
+
+```
+npm install
+```
+
+Then to run locally:
 
 ```
 make run
 ```
 
-Then browse to https://localhost:8000/.
+Once running, browse to https://localhost:8000/.
 In order to do much of anything, you'll need to set up at least one moderator, and use that moderator to set up at least one discussion.
 
 ### Adding a moderator
