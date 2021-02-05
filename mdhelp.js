@@ -1,3 +1,5 @@
+"use strict";
+
 exports.mdText = `# Markdown sample
 ## (Use "show raw" below to see how it works.)
 ### There are 6 possible levels of headings, but you get the idea...

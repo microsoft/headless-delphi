@@ -5,8 +5,12 @@
   <base target="_blank">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="css/delphi.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css">
-  <script src="https://momentjs.com/downloads/moment.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.7.1/dist/katex.min.css"> <!-- version seems to be necessary here -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/markdown-it-texmath/css/texmath.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/markdown-it-texmath/texmath.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
   <script src="js/bundle.js"></script>
 </head>
 
@@ -31,7 +35,7 @@
     <textarea id='postArea' placeholder='Enter your thoughts.'></textarea>
     <div id='controls'>
         <input type='checkbox' id='usemd'> 
-        <label for='usemd'>Use Markdown/LaTeX for formatting?</label>&nbsp;<span id="mdinfobut" class="info">(?)</span>
+        <label for='usemd'>Use Markdown and TeXmath for formatting</label>&nbsp;<span id="mdinfobut" class="info">(?)</span>
         <p>
         <div class='buttonbar'>
           <span class='but' id='postButton'>Post</span>
