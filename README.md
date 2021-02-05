@@ -27,22 +27,18 @@ Now when we load the app, we can check the box "update moderator credentials" an
 
 ### Adding a discussion
 
-[not yet implemented -- there is a single default discussion, accessed through http://localhost:8000/?d=5X324]
+Right now there is just a single default discussion, accessed through http://localhost:8000/?d=5X324. In future versions moderators will be able to add new discussions.
 
 ### Deploying
 
 The app is set up to be served from Azure, though other service providers would presumably have similar requirements. 
 
-First create the zip archive for deployment: 
+Before the first run, make sure the app has access to the key vault: in the Azure portal for the key vault, under "access management", select "add role assignments", and grant the app read access to the secrets. Then, set the variable `KEY_VAULT_NAME` in the app's environment on the server.
+
+For each time we deploy, create the zip archive for deployment: 
 
 ```
 make zip
 ```
 
-Then upload the file `deploy.zip` to the hosting service: https://docs.microsoft.com/en-ca/azure/app-service/quickstart-nodejs?pivots=platform-linux#deploy-to-azure.
-
-Finally, make sure the app has access to the key vault:
-
-```[show the code]```
-
-and set the variable `KEY_VAULT_NAME` in the app's environment.
+This will create the file `deploy.zip`, which we upload to the server: https://docs.microsoft.com/en-ca/azure/app-service/quickstart-nodejs?pivots=platform-linux#deploy-to-azure.
