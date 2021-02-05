@@ -385,20 +385,23 @@ function httpHandler(request, response) {
         body.created = Date.now();
         body.special = 'tag';
         // console.log('valid keys: ' + discussionIds[discussion].modtokens);
-        if (checkMod(body.author, body.modtoken, discussion)) {
-//        if (body.modtoken in discussionIds[discussion].modtokens) {
-          delete body.modtoken;
-          body = checkAllowedFields(body, false);
-          posts.insert(body);
-          delete tags[discussion];
-          // console.log('inserted tag: ' + JSON.stringify(body));
-          response.setHeader("Content-Type", "application/json");
-          response.end(JSON.stringify({ status: 'success', id: body.$loki, serverVersion: vers.version }));
-        } else {
-          console.log('bad moderator token');
+        checkMod(body.author, body.modtoken, discussion).then((ok) => {
+          if (ok) {
+            body = checkAllowedFields(body, false);
+            posts.insert(body);
+            delete tags[discussion];
+            response.setHeader("Content-Type", "application/json");
+            response.end(JSON.stringify({ status: 'success', id: body.$loki, serverVersion: vers.version }));
+          } else {
+            console.log('bad moderator token');
+            response.statusCode = 403;
+            response.end();
+          }
+        }).catch((e) => {
+          console.log('error checking moderator token: ' + e);
           response.statusCode = 403;
           response.end();
-        }
+        });
       } else if (postType == 'like') {                              // POST LIKE
         // console.log('post like');
         let likedPost = posts.get(reqpath.base);
@@ -417,7 +420,7 @@ function httpHandler(request, response) {
       } else if (postType == 'mod') {                               // POST MOD
         // console.log('post mod');
         checkMod(body.handle, body.modtoken, discussion).then((success) => {
-          console.log('post mod, success = ' + success);
+          // console.log('post mod, success = ' + success);
           if (success) {
             response.setHeader("Content-Type", "application/json");
             response.end(JSON.stringify({ status: 'success', serverVersion: vers.version }));
